@@ -1,0 +1,2 @@
+https://github.com/jslint-org/jslint
+https://wiki.mozilla.org/Labs/Bespin
