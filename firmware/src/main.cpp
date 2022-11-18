@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <DNSServer.h>
 #include <ESP8266WiFi.h>
+#include <LittleFS.h>
 
 #include "HTTP_server.h"
 
@@ -36,8 +37,7 @@ void setup() {
     DNS_server.start(53, "*", localhost);
     
     HTTP_server.begin();
-
-    // DATA SERVER
+    HTTP_init();
 }
 
 // -----------------------------

@@ -1,5 +1,11 @@
 #include "HTTP_server.h"
 #include <ESP8266WiFi.h>
+#include <LittleFS.h>
+
+void HTTP_init(){
+    FILESYS.setConfig(LittleFSConfig(false));
+    FILESYS.begin();
+}
 
 void HTTP_loop(WiFiServer* http_server) {
     WiFiClient http_client = http_server->available();
@@ -18,22 +24,6 @@ void HTTP_loop(WiFiServer* http_server) {
     }
 }
 
-String prepareHtmlPage()
-{
-  String htmlPage;
-  htmlPage.reserve(1024); // prevent ram fragmentation
-  htmlPage = F("HTTP/1.1 200 OK\r\n"
-                "Content-Type: text/html\r\n"
-                "Connection: close\r\n" 
-                "\r\n"
-                "<!DOCTYPE HTML>"
-                "<html>"
-                "Test"
-                "</html>"
-                "\r\n");
-  return htmlPage;
-}
-
 bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     size_t path_len = strlen(*path); 
     size_t remaining = *length - path_len;
@@ -42,21 +32,43 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
         free(*path);
         *path = tmp;
         *length *= 2;
-        Serial.println("------------------DUP");
+        Serial.println("Recieving buffer resized!");
     }
     if(!strstr(*path, "\r\n\r\n")) return false;
     
-    char type[5], SPIFFS_path[255];
-    Serial.println(sscanf(*path, "%s%s", type, SPIFFS_path));
-    Serial.println(type);
-    Serial.println(SPIFFS_path);
+    char type[5], file_path[64], FS_path[32] = "/w";
+    sscanf(*path, "%s%s", type, file_path);
+    if(!strcmp(file_path, "/")) strcpy(file_path, "/index.html");
+    // TODO: Check/Chop flags on file_path
+    strcat(FS_path, file_path);
 
-    //TODO: PRINT PAGE
-    http_client->println(prepareHtmlPage());
+    const size_t size = 512; char buf[size]; char buf_len[16];
+    const char* resp = "HTTP/1.1 %s\r\nContent-Type: %s\r\nContent-length: %zu\r\nConnection: close\r\n\r\n";
+    File data = FILESYS.open(FS_path, "r");
+    if (data) {
+        sprintf(buf,resp, "200 OK", HTTP_getMIME(FS_path), data.size());
+        Serial.println(buf);
+    } else {
+        if(!(data = FILESYS.open("/s/404.html", "r"))) return true;
+        sprintf(buf,resp, "400 Not Found", HTTP_getMIME(".html"), data.size());
+    }
+    http_client->write(buf);
+    while(http_client->write(buf, data.read((uint8_t*)buf, size)));
 
-    Serial.println("-------------------------------");
-    Serial.println(*path);
-    //Serial.println(strlen(*path));
-    Serial.println("DONE");
     return true;
+}
+
+const char* HTTP_getMIME(const char* file){
+    char ext[16]; strcat(strcpy(ext, strchr(file, (int)'.')), " ");
+    if(strstr(".html .htm ", ext))
+        return "text/html";
+    if(strstr(".js ", ext))
+        return "text/javascript";
+    if(strstr(".css ", ext))
+        return "text/css";
+    if(strstr(".jpg .jpeg ", ext))
+        return "image/jpeg";
+    if(strstr(".png ", ext))
+        return "image/png";
+    return "application/octet-stream";
 }
