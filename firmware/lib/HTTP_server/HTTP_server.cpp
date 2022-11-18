@@ -42,7 +42,7 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     // TODO: Check/Chop flags on file_path
     strcat(FS_path, file_path);
 
-    const size_t size = 512; char buf[size]; char buf_len[16];
+    const size_t size = 128; char buf[size];
     const char* resp = "HTTP/1.1 %s\r\nContent-Type: %s\r\nContent-length: %zu\r\nConnection: close\r\n\r\n";
     File data = FILESYS.open(FS_path, "r");
     if (data) {
@@ -53,7 +53,12 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
         sprintf(buf,resp, "400 Not Found", HTTP_getMIME(".html"), data.size());
     }
     http_client->write(buf);
-    while(http_client->write(buf, data.read((uint8_t*)buf, size)));
+    http_client->flush();
+
+    while(http_client->write(buf, data.read((uint8_t*)buf, size)))
+        http_client->flush();
+        //while(data.streamRemaining() > 0 && !data.available());
+            //Serial.println("PP");
 
     return true;
 }
