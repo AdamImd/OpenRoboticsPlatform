@@ -52,14 +52,8 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
         if(!(data = FILESYS.open("/s/404.html", "r"))) return true;
         sprintf(buf,resp, "400 Not Found", HTTP_getMIME(".html"), data.size());
     }
-    http_client->write(buf);
-    http_client->flush();
-
-    while(http_client->write(buf, data.read((uint8_t*)buf, size)))
-        http_client->flush();
-        //while(data.streamRemaining() > 0 && !data.available());
-            //Serial.println("PP");
-
+    http_client->write(buf); http_client->flush();
+    while(http_client->write(buf, data.read((uint8_t*)buf, size))) http_client->flush();
     return true;
 }
 
