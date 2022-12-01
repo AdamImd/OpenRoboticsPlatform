@@ -1,0 +1,20 @@
+#header {
+    background-color: aqua;
+}
+
+#editor_main {
+    background-color: blue;
+    display: flex;
+}
+
+#editor_nav {
+    background-color: brown;
+    float: left;
+    width: 10%;
+}
+
+#editor_code {
+    background-color: cadetblue;
+    float: right;
+    width: auto;
+}

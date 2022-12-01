@@ -1,0 +1,1 @@
+Thanks to W3 schools for the syntax highlighter. 
