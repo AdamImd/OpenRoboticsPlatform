@@ -1,4 +1,4 @@
-(function () {
+var code_mirror_init = (function () {
    'use strict';
 
    /**
@@ -24173,9 +24173,13 @@
        return true;
    });
 
-   new EditorView({
-     extensions: [basicSetup, javascript()],
-     parent: document.body
-   });
+   function code_mirror_init(parent_element){
+     new EditorView({
+       extensions: [basicSetup, javascript()],
+       parent: parent_element
+     });
+   }
+
+   return code_mirror_init;
 
 })();

@@ -5,20 +5,18 @@ from pathlib import Path
 import shutil
 import sys
 import glob
+import re
 
 def form(data, rep):
     for tag in rep.keys():
-        data = data.replace(tag, rep[tag])
+        re_str = rep[tag][0][0] + "(.*?)" + rep[tag][0][1]
+        data = re.sub(re_str, rep[tag][1], data, flags=re.DOTALL)
     return data
-
-if(len(sys.argv)>1):
-    shutil.rmtree("../data", ignore_errors=True)
-shutil.copytree("./data_src/", "../data/", dirs_exist_ok=True)
 
 repl = dict()
 for f in glob.iglob("./macro/**/*", recursive=True):
     with open(f, "r") as r:
-        repl[f.split('/')[-1]]=r.read()
+        repl[f.split('/')[-1]]=(f.split('/')[-1].split("&") ,r.read())
 
 for f in glob.iglob("../data/**/*.html", recursive=True):
     dat = ""
