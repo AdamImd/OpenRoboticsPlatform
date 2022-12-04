@@ -3,6 +3,7 @@
     "@codemirror/lang-javascript": "^6.1.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "codemirror": "^6.0.1",
+    "eslint-linter-browserify": "^8.29.0",
     "rollup": "^3.5.0",
     "terser": "^5.16.0"
   }
