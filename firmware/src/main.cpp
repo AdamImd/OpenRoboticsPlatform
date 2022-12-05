@@ -32,6 +32,8 @@ void WS_event(uint8_t remote_num, WStype_t ev_type, uint8_t* data, size_t len) {
         break; // TODO: LOGGING/INDI
     case WStype_TEXT:
         Serial.write(data, len);
+    default:
+        return;
     }
 }
 
