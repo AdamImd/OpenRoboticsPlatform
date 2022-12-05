@@ -36,23 +36,41 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     }
     if(!strstr(*path, "\r\n\r\n")) return false;
     
-    char type[5], file_path[64], FS_path[32] = "/w";
+    ///-----------------
+    //Serial.println(*path);
+    ///-----------------
+
+    char type[5], enc[16], file_path[64], FS_path[32] = "/w"; 
     sscanf(*path, "%s%s", type, file_path);
+    
     if(!strcmp(file_path, "/")) strcpy(file_path, "/index.html");
+    if(!strcmp(file_path, "/tree")) strcpy(FS_path, "/s");
+    if(!strcmp(file_path, "/editor.js"))
+        strcpy(enc, "gzip");
+    else
+        strcpy(enc, "identity");
+    
     // TODO: Check/Chop flags on file_path
     strcat(FS_path, file_path);
+    
     // TODO: opt size
-    const size_t size = 512; char buf[size];
-    const char* resp = "HTTP/1.1 %s\r\nContent-Type: %s\r\nContent-length: %zu\r\nConnection: close\r\n\r\n";
+    const size_t size = 512; size_t read; char buf[size];
+    const char* resp = "HTTP/1.1 %s\r\nContent-Encoding: %s\r\nContent-Type: %s\r\nContent-length: %zu\r\nConnection: close\r\n\r\n";
+
     File data = FILESYS.open(FS_path, "r");
     if (data) {
-        sprintf(buf,resp, "200 OK", HTTP_getMIME(FS_path), data.size());
+        sprintf(buf, resp, "200 OK", enc, HTTP_getMIME(FS_path), data.size());
     } else {
         if(!(data = FILESYS.open("/s/404.html", "r"))) return true;
-        sprintf(buf,resp, "400 Not Found", HTTP_getMIME(".html"), data.size());
+        sprintf(buf, resp, "400 Not Found", enc, HTTP_getMIME(".html"), data.size());
     }
-    http_client->write(buf); http_client->flush();
-    while(http_client->write(buf, data.read((uint8_t*)buf, size))) http_client->flush();
+    read = strlen(buf);
+    do{
+        ESP.wdtFeed();
+        http_client->flush();
+        http_client->write(buf, read);
+    } while( (read = data.read((uint8_t*)buf, size)) );
+    http_client->flush();
     return true;
 }
 
@@ -68,5 +86,7 @@ const char* HTTP_getMIME(const char* file){
         return "image/jpeg";
     if(strstr(".png ", ext))
         return "image/png";
+    if(strstr(".ico ", ext))
+        return "image/x-icon";
     return "application/octet-stream";
 }

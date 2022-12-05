@@ -14,7 +14,51 @@
 }
 
 #editor_code {
-    background-color: cadetblue;
+    background-color: rgb(230, 252, 253);
     float: right;
-    width: auto;
+    width: 90%;
 }
+
+#editor_code_butons {
+    display: flex;
+    height: 30px;
+    border-style: ridge;
+}
+#editor_code_butons_tab {
+    display: flex;
+    float:left;
+}
+
+#new_tab {
+    float: left;
+}
+
+#editor_code_doc {
+    display: block;
+}
+
+#save_tab {
+    margin-left: auto;
+}
+
+#run_tab {
+    float: right;
+}
+
+.editor_tab {
+    float: left;
+    border-style: groove;
+    border-radius: 20%;
+    background-color: chartreuse;
+}
+
+.unsaved_tab {
+    float: left;
+    border-style: groove;
+    border-radius: 20%;
+    background-color: chocolate;
+}
+
+/* Set editor Height */
+
+/*padding-left: 5px;*/

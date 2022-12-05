@@ -16,7 +16,7 @@ int max_conn = 4;
 const IPAddress localhost = IPAddress(192, 168, 0, 1);
 const IPAddress subnet = IPAddress(255, 255, 0, 0);
 
-DNSServer DNS_server;
+DNSServer DNS_server; // Disable?
 WebSocketsServer WS_server(81,"/", "arduino");
 WiFiServer HTTP_server(localhost,80);
 
@@ -59,5 +59,5 @@ void setup() {
 void loop() {
     HTTP_loop(&HTTP_server);
     WS_server.loop();
-    DNS_server.processNextRequest();
+    //DNS_server.processNextRequest();
 }

@@ -13,8 +13,6 @@ var files = {};
 
 var save, run, new_tab;
 
-console.log("Yes?");
-
 const config = {
 	// eslint configuration
 	parserOptions: {
@@ -30,86 +28,86 @@ const config = {
 	},
 };
 
-window.onload = function () {
-  file_id = 0;
-  save = document.getElementById("save_tab");
-  run = document.getElementById("run_tab");
-  new_tab = document.getElementById("new_tab");
+//window.onload = function () {
+file_id = 0;
+save = document.getElementById("save_tab");
+run = document.getElementById("run_tab");
+new_tab = document.getElementById("new_tab");
 
-  document.onkeydown = function (event) {
-    if (event.ctrlKey || event.altKey) {
-      if(event.key == "s"){
-        event.preventDefault();      ;
-        save.click();
-      }
+document.onkeydown = function (event) {
+  if (event.ctrlKey || event.altKey) {
+    if(event.key == "s"){
+      event.preventDefault();      ;
+      save.click();
     }
-    if (event.altKey){
-      if(event.key == "Enter"){
-        event.preventDefault();
-        run.click();
-      }
-      if(event.key == "t"){
-        event.preventDefault();
-        new_tab.click();
-      }
-      //console.log(event.key);
+  }
+  if (event.altKey){
+    if(event.key == "Enter"){
+      event.preventDefault();
+      run.click();
     }
-  };
-  
-  save.onclick = function () {
-    document.getElementById(editor.tab_id).className = "editor_tab"
-    //TODO: Actually save
-  };
+    if(event.key == "t"){
+      event.preventDefault();
+      new_tab.click();
+    }
+    //console.log(event.key);
+  }
+};
 
-  run.onclick = function () {
-    console.log("RUNING");
-    //TODO: Actually run
-  };
+save.onclick = function () {
+  document.getElementById(editor.tab_id).className = "editor_tab"
+  //TODO: Actually save
+};
 
-  editor = new EditorView({
+run.onclick = function () {
+  console.log("RUNING");
+  //TODO: Actually run
+};
+
+editor = new EditorView({
+  extensions: [
+    basicSetup, 
+    keymap.of([indentWithTab]), 
+    javascript(),
+    lintGutter(),
+    linter(esLint(new eslint.Linter(), config)),
+  ],
+  parent: document.getElementById("editor_code_doc"),
+});
+
+changes = StateField.define({
+  create() { return 0 },
+  update(value, tr) { 
+    if(tr.docChanged)
+      document.getElementById(editor.tab_id).className = "unsaved_tab"
+    return tr.docChanged ? value + 1 : value 
+  }
+});
+
+
+new_tab.onclick = function () {
+  var tab = document.createElement("div")
+  tab.setAttribute("id", "tab_"+file_id++);
+  tab.setAttribute("class", "editor_tab");
+  tab.addEventListener("click", editor_tab_click);
+  tab.textContent = tab.id;
+  document.getElementById("editor_code_butons_tab").appendChild(tab)
+  files[tab.id] = EditorState.create({
+    doc: tab.id,
     extensions: [
       basicSetup, 
       keymap.of([indentWithTab]), 
       javascript(),
       lintGutter(),
       linter(esLint(new eslint.Linter(), config)),
-    ],
-    parent: document.getElementById("editor_code_doc"),
-  });
-
-  changes = StateField.define({
-    create() { return 0 },
-    update(value, tr) { 
-      if(tr.docChanged)
-        document.getElementById(editor.tab_id).className = "unsaved_tab"
-      return tr.docChanged ? value + 1 : value 
-    }
-  });
-
-
-  new_tab.onclick = function () {
-    var tab = document.createElement("div")
-    tab.setAttribute("id", "tab_"+file_id++);
-    tab.setAttribute("class", "editor_tab");
-    tab.addEventListener("click", editor_tab_click);
-    tab.textContent = tab.id;
-    document.getElementById("editor_code_butons_tab").appendChild(tab)
-    files[tab.id] = EditorState.create({
-      doc: tab.id,
-      extensions: [
-        basicSetup, 
-        keymap.of([indentWithTab]), 
-        javascript(),
-        lintGutter(),
-        linter(esLint(new eslint.Linter(), config)),
-        changes,
-      ]});
-    if(editor.tab_id)
-      files[editor.tab_id] = editor.state;
-    editor.setState(files[tab.id]);
-    editor.tab_id = tab.id;
-  };
+      changes,
+    ]});
+  if(editor.tab_id)
+    files[editor.tab_id] = editor.state;
+  editor.setState(files[tab.id]);
+  editor.tab_id = tab.id;
 };
+//};
 
 function editor_tab_click(event) {
   files[editor.tab_id] = editor.state;

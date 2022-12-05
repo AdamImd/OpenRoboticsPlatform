@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
         <title>OpenRoboticsPlatform</title>
         <link rel="stylesheet" href="./main.css">
-        <script src="./edit_init.js"></script>
+        <script src="./editor_init.js"></script>
+        <!--script src="./editor.js"></script-->
     </head>
     <body>
         <!--HEADER-->
@@ -16,10 +18,17 @@
             <div id="editor_nav">
                 Side-nav
             </div>
-            <code div id="editor_code">
-                CODE
-                <script src="./edit.js"></script>
-            </code>
+            <div id="editor_code">
+                <div id="editor_code_butons">
+                    <div id="editor_code_butons_tab"></div>
+                    <button id="new_tab">+</button>
+                    <button id="save_tab">Save</button>
+                    <button id="run_tab">Run</button>
+                </div>
+                <div id="editor_code_doc">
+                    <button id="editor_code_doc_start">Click here to load editor!</button>
+                </div>
+            </div>
         </div>
     </body>
 </html>
