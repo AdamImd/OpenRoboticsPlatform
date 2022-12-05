@@ -13,6 +13,8 @@ var files = {};
 
 var save, run, new_tab;
 
+console.log("Yes?");
+
 const config = {
 	// eslint configuration
 	parserOptions: {
