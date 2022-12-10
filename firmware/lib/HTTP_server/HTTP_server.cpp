@@ -2,7 +2,11 @@
 #include <ESP8266WiFi.h>
 #include <LittleFS.h>
 
-void HTTP_init(){
+static bool tree_dirty;
+
+void HTTP_init(WiFiServer* http_server){
+    tree_dirty = true;
+    http_server->begin(80, 16);
     FILESYS.setConfig(LittleFSConfig(false));
     FILESYS.begin();
 }
@@ -36,9 +40,6 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     }
     if(!strstr(*path, "\r\n\r\n")) return false;
     
-    ///-----------------
-    //Serial.println(*path);
-    ///-----------------
 
     char type[5], enc[16], file_path[64], FS_path[32] = "/w"; 
     sscanf(*path, "%s%s", type, file_path);
@@ -58,7 +59,9 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     // TODO: Check/Chop flags on file_path
     strcat(FS_path, file_path);
 
-
+    ///-----------------
+    Serial.println(FS_path);
+    ///-----------------
     
     // TODO: opt size
     const size_t size = 512; size_t read; char buf[size];
@@ -71,13 +74,19 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
         if(!(data = FILESYS.open("/s/404.html", "r"))) return true;
         sprintf(buf, resp, "400 Not Found", enc, HTTP_getMIME(".html"), data.size());
     }
+    if(!data) Serial.println("FS ERROR: Files missing!");
     read = strlen(buf);
+    //------------------
+    //int writenum = 0;
+    //------------------
     do{
         ESP.wdtFeed();
         http_client->flush();
         http_client->write(buf, read);
+        //Serial.printf("\tWrite: %i\n", (writenum+= read) );
     } while( (read = data.read((uint8_t*)buf, size)) );
     http_client->flush();
+    Serial.println("Done T!");
     return true;
 }
 
@@ -103,21 +112,23 @@ void recursive_add_file(const char* path, File* tree){
     Dir file = FILESYS.openDir(path);
     while(file.next()) {
         Serial.println(file.fileName());
-        tree->write(file.fileName().c_str());
         if(file.isFile()){
-            tree->write("\x1C\x1F");
+            tree->write("\x1F\x1C");
+            tree->write(file.fileName().c_str());
         }
         if(file.isDirectory()){
             char sub_path[32];
             strcat(strcat(strcpy(sub_path,path), "/"), file.fileName().c_str());
-            tree->write("\x1D\x1F");
-                recursive_add_file(sub_path, tree);
-            tree->write("\x1E\x1F");
+            tree->write("\x1F\x1D");
+            tree->write(file.fileName().c_str());
+            recursive_add_file(sub_path, tree);
+            tree->write("\x1F\x1E");
         }
     }
 }
 
 void update_tree() {
+    if(!tree_dirty) return;
     File tree = FILESYS.open("/s/tree.bin", "w");
     recursive_add_file("/u", &tree);
     tree.flush();
