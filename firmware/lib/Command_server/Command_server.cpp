@@ -1,49 +1,87 @@
 #include <Arduino.h>
 #include "Command_server.h"
-#include <ESP8266WiFi.h>
 #include <LittleFS.h>
+#include <WebSocketsServer.h>
 
-const uint8_t command_clients_max = 4;
-WiFiClient command_clients[command_clients_max];
+command* command_list;
+uint16_t command_list_len = 0;
+uint16_t command_list_len_max = 0;
 
-const int command_len = 128;
-char command[command_clients_max][command_len];
+const uint8_t command_len = 128;
+//char command[WEBSOCKETS_SERVER_CLIENT_MAX][command_len];
+uint16_t command_state[WEBSOCKETS_SERVER_CLIENT_MAX];
+void* command_data[WEBSOCKETS_SERVER_CLIENT_MAX];
+static WebSocketsServer Command_server(81, "/");
 
-void Command_init(WiFiServer* command_server){
-    command_server->begin(81, 8);
-    for(int i = 0; i < command_clients_max; i++)
-        command_clients[i] = command_server->available();
+
+void Command_init(){
+    for(int i = 0; i < WEBSOCKETS_SERVER_CLIENT_MAX; i++)
+        command_state[i]=0;
+    
+    Command_server.begin();
+    Command_server.onEvent(Command_handle);
 }
 
-void Command_loop(WiFiServer* command_server) {
-    for(int i = 0; i < command_clients_max; i++){
-        if(!command_clients[i] || !command_clients[i].connected())
-            command_clients[i] = command_server->available();
-        if(command_clients[i] && command_clients[i].connected())
-            Command_handle(&command_clients[i], i);
+void Command_list_add(command event){
+    if(command_list_len_max < 1){ // Init command_list
+        Serial.println("H:1");
+        command_list_len = 0;
+        command_list_len_max = 128;
+        command* tmp = command_list;
+        command_list = (command*)malloc(sizeof(command) * command_list_len_max);
+        free(tmp);
     }
+    if(command_list_len >= command_list_len_max){ // Resize command_list
+        Serial.println("H:2");
+        command_list_len_max *= 2;
+        command* tmp = command_list;
+        command_list = (command*)malloc(sizeof(command) * command_list_len_max);
+        memcpy(command_list, tmp, sizeof(command)*command_list_len);
+        free(tmp);
+    }
+    command_list[command_list_len++] = event;
+    Serial.println(command_list[0].command_num);
 }
 
+void Command_loop() {
+    Command_server.loop();
+}
 
-void Command_handle(WiFiClient* http_client, int con){
-        if(http_client->available()){
-            size_t len = strlen(command[con]);
-            http_client->readBytesUntil('\x10', command[con], command_len - len); // Message break point
-            Serial.println(command[con]);
-            if(strchr(command[con], '\x11')){ // End
-                char* start;
-                if((start = strchr(command[con], '\x12'))){ // Start
-                    Command_execute(http_client, start);
-                } else{
-                    Serial.println("MALFORMED COMMAND PACKET!");
-                }
-                memset(command[con], 0, command_len);
-                return;
-            }
+uint16_t Command_handle(uint8_t client_num, WStype_t event_type, uint8_t * payload, size_t length){
+    if(command_state[client_num]){
+        for (int i = 0; i < command_list_len; i++)
+            if(command_list[i].command_num == command_state[client_num])
+                command_state[client_num] = command_list[i].command_rw_handle(&Command_server, &command_data[i], client_num, event_type, payload, length);
+    } else {
+        switch (event_type) {
+            case WStype_DISCONNECTED:
+                break;
+            case WStype_CONNECTED:
+                break;
+            case WStype_TEXT:
+            case WStype_BIN:
+                Serial.print("EVENT: ");
+                Serial.println(event_type);
+                command_state[client_num] = Command_execute(client_num, payload, length);
+                break;
+            default:
+                break;
         }
+    }
+    return command_state[client_num];
 }
 
-void Command_execute(WiFiClient* http_client, char* command){
-    // TODO: do?
-    Serial.println("EXE TIME");
+uint16_t Command_execute(uint8_t client_num, uint8_t * payload, size_t length){
+    Serial.println("EXE TIME 0");
+    uint16_t* event_num = (uint16_t*)payload;
+    uint8_t* payload_data = (payload + sizeof(uint16_t));
+    Serial.println("EXE TIME 1");
+
+    for(int i=0; i<command_list_len; i++)
+        if(command_list[i].command_num == *event_num){
+            Serial.println("EXE TIME 3");
+
+            return command_list[i].command_init_handle(&Command_server, &command_data[i], client_num, payload_data, length - sizeof(uint16_t));
+        }
+    return 0;    
 }
