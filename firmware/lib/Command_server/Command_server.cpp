@@ -76,12 +76,16 @@ uint16_t Command_execute(uint8_t client_num, uint8_t * payload, size_t length){
     uint16_t* event_num = (uint16_t*)payload;
     uint8_t* payload_data = (payload + sizeof(uint16_t));
     Serial.println("EXE TIME 1");
+    Serial.println(*event_num);
+    Serial.println("CL:");
 
-    for(int i=0; i<command_list_len; i++)
+    for(int i=0; i<command_list_len; i++){
+         Serial.println(command_list[i].command_num);
         if(command_list[i].command_num == *event_num){
             Serial.println("EXE TIME 3");
-
             return command_list[i].command_init_handle(&Command_server, &command_data[i], client_num, payload_data, length - sizeof(uint16_t));
         }
+    }
+    // TODO: Error handle
     return 0;    
 }
