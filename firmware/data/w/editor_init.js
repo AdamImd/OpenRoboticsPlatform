@@ -1,7 +1,3 @@
-function $(doc) {
-    return document.getElementById(doc);
-}
-
 window.onload = function () {
     document.getElementById("editor_code_doc_start").onclick = function () {
         button = this;

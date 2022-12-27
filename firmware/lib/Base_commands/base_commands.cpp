@@ -1,6 +1,8 @@
 #include "Command_server.h"
 #include <LittleFS.h>
 #include <Arduino.h>
+#include "HTTP_server.h"
+
 #define FILESYS LittleFS
 
 #define READ_NUM 1
@@ -71,6 +73,7 @@ uint16_t write_rw_handle(WebSocketsServer* server, void** global_data, uint8_t c
         case WStype_TEXT:
             write_files[client_num].file.close();
             server->sendTXT(client_num, "\x00");
+            set_tree_dirty(true);
             Serial.println("TXT");
             return 0;
         default:

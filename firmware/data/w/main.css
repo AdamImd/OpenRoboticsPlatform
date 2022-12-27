@@ -114,3 +114,12 @@ ul, #editor_nav_tree {
     background-color: beige;
     font-weight: bold;
 }
+
+/* RUN */
+
+#run_main {
+    background-color: blue;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}

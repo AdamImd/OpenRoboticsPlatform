@@ -4,6 +4,8 @@
 
 static bool tree_dirty;
 
+void set_tree_dirty(bool dirty) { tree_dirty = dirty; }
+
 void HTTP_init(WiFiServer* http_server){
     tree_dirty = true;
     http_server->begin(80, 16);
@@ -130,8 +132,10 @@ void recursive_add_file(const char* path, File* tree){
 void update_tree() {
     if(!tree_dirty) return;
     File tree = FILESYS.open("/s/tree.bin", "w");
-    recursive_add_file("/u", &tree);
+    //recursive_add_file("/u", &tree);
+    recursive_add_file("/", &tree);
     tree.flush();
     tree.close();
+    tree_dirty = false;
 }
     
