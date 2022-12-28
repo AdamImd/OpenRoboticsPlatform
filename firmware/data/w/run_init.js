@@ -18,10 +18,15 @@ window.onload = function () {
     document.onkeydown = function (event) {
         if (event.ctrlKey || event.altKey){
             if(event.key == "Enter"){
-            event.preventDefault();
-            $("run_file_execute").click();
+                console.log("here");
+                window.open("", "editor").focus()
             }
         }
+        if(event.key == " "){
+            event.preventDefault();
+            $("run_file_execute").click();
+        }
+        console.log(event.key);
     };
 };
 

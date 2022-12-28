@@ -1,4 +1,5 @@
 window.onload = function () {
+    window.name = "editor";
     document.getElementById("editor_code_doc_start").onclick = function () {
         button = this;
         button.onclick = null;
