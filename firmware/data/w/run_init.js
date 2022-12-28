@@ -15,6 +15,14 @@ window.onload = function () {
     $("run_file_execute").onclick = function (event) { 
         file_execute($("run_file_path").value)};
     
+    document.onkeydown = function (event) {
+        if (event.ctrlKey || event.altKey){
+            if(event.key == "Enter"){
+            event.preventDefault();
+            $("run_file_execute").click();
+            }
+        }
+    };
 };
 
 
