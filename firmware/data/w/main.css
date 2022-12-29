@@ -123,3 +123,10 @@ ul, #editor_nav_tree {
     margin: 0;
     padding: 0;
 }
+
+#run_console {
+  background-color: red;
+  min-height: 300px;
+  max-height: 300px;
+  overflow: scroll;
+}

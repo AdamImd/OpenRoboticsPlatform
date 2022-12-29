@@ -137,10 +137,16 @@ function editor_tab_click(event) {
 
 //----------------------------
 
+function editor_save_new_filename(){
+  return prompt("Enter file save path: ");
+}
+
 function editor_save_tab(){
   var file_path = files[editor.tab_id][1];
-  if(file_path == "")
+  while(file_path == "")
     file_path = editor_save_new_filename();
+    files[editor.tab_id][1] = file_path;
+    $(editor.tab_id).textContent = file_path;
   console.log(file_path);
   console.log(editor.state);
   
@@ -207,9 +213,6 @@ function editor_save_tab(){
   });
 }
 
-function editor_save_new_filename(){
-  return "TEST";
-}
 
 //----------------------------
 
