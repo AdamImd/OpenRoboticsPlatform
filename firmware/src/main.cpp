@@ -14,7 +14,7 @@
 WiFiEventHandler WiFi_connected_public, WiFi_disconnected_public;
 
 const char* hostname = "NODE";
-const char* ssid = "Test";
+const char* ssid = "Open";
 const char* pass = "";
 const int max_conn = 4;
 
@@ -31,6 +31,7 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Started...");
 
+    /*
     WiFi_connected_public = WiFi.onStationModeGotIP([](const WiFiEventStationModeGotIP& event)
     {
         HTTP_server_public = (WiFiServer*)malloc(sizeof(WiFiServer));
@@ -51,13 +52,14 @@ void setup() {
         Serial.println(WiFi.localIP());
         Serial.println("-------------------");
     });
+    */
 
     WiFi.mode(WIFI_AP_STA);
     WiFi.hostname(hostname);
     WiFi.softAPConfig(localhost, localhost, subnet);
     WiFi.softAP(ssid,pass,1,0,max_conn);
 
-    WiFi.begin("rumble");
+    //WiFi.begin("rumble");
     //WiFi.begin("DinnakenResidence", "Argyle!920");
 
     //Serial.println(MDNS.begin("test"));
@@ -76,8 +78,9 @@ void setup() {
  
 void loop() {
     //MDNS.update();
-    HTTP_loop(&HTTP_server_private);
-    HTTP_loop(HTTP_server_public);
-    Command_loop();
     //DNS_server.processNextRequest();
+    
+    HTTP_loop(&HTTP_server_private);
+    //HTTP_loop(HTTP_server_public);
+    Command_loop();
 }

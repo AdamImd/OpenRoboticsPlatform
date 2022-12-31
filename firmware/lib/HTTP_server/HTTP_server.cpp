@@ -31,6 +31,7 @@ void HTTP_loop(WiFiServer* http_server) {
             if(http_client.available())
                 if(HTTP_handle(&http_client, &resource_path, &len))
                     break;
+        http_client.flush();
         while(http_client.available())
             http_client.read();
         free(resource_path);
@@ -74,7 +75,7 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     ///-----------------
     
     // TODO: opt size
-    const size_t size = 512; size_t read; char buf[size];
+    const size_t size = 512; char buf[size];
     const char* resp = "HTTP/1.1 %s\r\nAccess-Control-Allow-Origin: *\r\nContent-Encoding: %s\r\nContent-Type: %s\r\n\
                         Content-length: %zu\r\nConnection: close\r\n\r\n";
 
@@ -86,24 +87,16 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
         sprintf(buf, resp, "400 Not Found", enc, HTTP_getMIME(".html"), data.size());
     }
     if(!data) Serial.println("FS ERROR: Files missing!");
-    read = strlen(buf);
 
-    /*
-    //------------------
-    //int writenum = 0;
-    //------------------
-    do{
-        ESP.wdtFeed();
-        http_client->flush();
-        http_client->write(buf, read);
-        //Serial.printf("\tWrite: %i\n", (writenum+= read) );
-    } while( (read = data.read((uint8_t*)buf, size)) );
-    http_client->flush();*/
-
-
-    http_client->write(buf, read);
-    http_client->write(data);
+    Serial.println("Start T!");
+    http_client->write(buf, strlen(buf));
+    Serial.println("Mid T!");
+    //http_client->write(data);
+    
+    Serial.println(data.sendSize(http_client, data.size()));
+    //Serial.println((int)data.getLastSendReport());
     Serial.println("Done T!");
+    data.close();
     return true;
 }
 
