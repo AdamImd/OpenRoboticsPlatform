@@ -88,13 +88,9 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     }
     if(!data) Serial.println("FS ERROR: Files missing!");
 
-    Serial.println("Start T!");
+    //http_client->write(data); // TODO: Bug Report
     http_client->write(buf, strlen(buf));
-    Serial.println("Mid T!");
-    //http_client->write(data);
-    
     Serial.println(data.sendSize(http_client, data.size()));
-    //Serial.println((int)data.getLastSendReport());
     Serial.println("Done T!");
     data.close();
     return true;
