@@ -4,16 +4,24 @@
 
 static bool tree_dirty;
 
+void FS_init(){
+    FILESYS.setConfig(LittleFSConfig(false));
+    FILESYS.begin();
+    tree_dirty = true;
+}
+
 void set_tree_dirty(bool dirty) { tree_dirty = dirty; }
 
 void HTTP_init(WiFiServer* http_server){
-    tree_dirty = true;
+    if(http_server == nullptr) return;
+    http_server->setNoDelay(false); // TODO: CHECK?
     http_server->begin(80, 16);
-    FILESYS.setConfig(LittleFSConfig(false));
-    FILESYS.begin();
+    WiFiClient::setDefaultNoDelay(true);
+    WiFiClient::setDefaultSync(false);
 }
 
 void HTTP_loop(WiFiServer* http_server) {
+    if(http_server == nullptr) return;
     WiFiClient http_client = http_server->available();
     http_client.setTimeout(0);
     if(http_client){
@@ -67,7 +75,8 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     
     // TODO: opt size
     const size_t size = 512; size_t read; char buf[size];
-    const char* resp = "HTTP/1.1 %s\r\nContent-Encoding: %s\r\nContent-Type: %s\r\nContent-length: %zu\r\nConnection: close\r\n\r\n";
+    const char* resp = "HTTP/1.1 %s\r\nAccess-Control-Allow-Origin: *\r\nContent-Encoding: %s\r\nContent-Type: %s\r\n\
+                        Content-length: %zu\r\nConnection: close\r\n\r\n";
 
     File data = FILESYS.open(FS_path, "r");
     if (data) {
@@ -78,6 +87,8 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     }
     if(!data) Serial.println("FS ERROR: Files missing!");
     read = strlen(buf);
+
+    /*
     //------------------
     //int writenum = 0;
     //------------------
@@ -87,7 +98,11 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
         http_client->write(buf, read);
         //Serial.printf("\tWrite: %i\n", (writenum+= read) );
     } while( (read = data.read((uint8_t*)buf, size)) );
-    http_client->flush();
+    http_client->flush();*/
+
+
+    http_client->write(buf, read);
+    http_client->write(data);
     Serial.println("Done T!");
     return true;
 }
@@ -113,7 +128,6 @@ const char* HTTP_getMIME(const char* file){
 void recursive_add_file(const char* path, File* tree){
     Dir file = FILESYS.openDir(path);
     while(file.next()) {
-        Serial.println(file.fileName());
         if(file.isFile()){
             tree->write("\x1F\x1C");
             tree->write(file.fileName().c_str());
