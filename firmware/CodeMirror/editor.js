@@ -64,7 +64,7 @@ run.onclick = function () {
   console.log("RUNING");
   localStorage.setItem("exe_file_name", files[editor.tab_id][1]);
   if(run_window == null || run_window.closed)
-    run_window = window.open("./run.html", "run_window");
+    run_window = window.open("./w/run.html", "run_window");
   else
     run_window.focus();
 };
