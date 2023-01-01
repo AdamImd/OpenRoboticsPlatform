@@ -57,7 +57,7 @@ function editor_nav_init(event_fun, event_funct) {
         }
     }
     req.timeout = 0;
-    req.open("GET", "./tree.bin", true);
+    req.open("GET", "./s/tree.bin", true);
     req.send();
 }
 

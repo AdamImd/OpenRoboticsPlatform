@@ -18,7 +18,6 @@ window.onload = function () {
     document.onkeydown = function (event) {
         if (event.ctrlKey || event.altKey){
             if(event.key == "Enter"){
-                console.log("here");
                 window.open("", "editor").focus()
             }
         }
@@ -26,7 +25,6 @@ window.onload = function () {
             event.preventDefault();
             $("run_file_execute").click();
         }
-        console.log(event.key);
     };
 };
 
@@ -34,7 +32,7 @@ window.onload = function () {
 function file_execute(path){
     open_file(path, function(file_path, data) { 
         try{
-            eval(data);
+            window.eval(data);
         } catch (e) {
             alert(e.lineNumber);
             alert(e.message);

@@ -52,36 +52,28 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     if(!strstr(*path, "\r\n\r\n")) return false;
     
 
-    char type[5], enc[16], file_path[64], FS_path[32] = "/w"; 
-    sscanf(*path, "%s%s", type, file_path);
+    char type[5], enc[16], file_path[64]; 
+    sscanf(*path, "%s%s", type, file_path); // GET /***
     
     if(!strcmp(file_path, "/")) strcpy(file_path, "/index.html");
 
-    if(!strcmp(file_path, "/editor.js"))
+    if(!strcmp(file_path, "/w/editor.js")) // TODO: GZIP folder
         strcpy(enc, "gzip");
     else
         strcpy(enc, "identity");
         
-    if(!strcmp(file_path, "/tree.bin")) {
+    if(!strcmp(file_path, "/s/tree.bin"))
         update_tree();
-        strcpy(FS_path, "/s");
-    }
     
     // TODO: Check/Chop flags on file_path
-    strcat(FS_path, file_path);
 
-    ///-----------------
-    Serial.println(FS_path);
-    ///-----------------
-    
-    // TODO: opt size
     const size_t size = 512; char buf[size];
     const char* resp = "HTTP/1.1 %s\r\nAccess-Control-Allow-Origin: *\r\nContent-Encoding: %s\r\nContent-Type: %s\r\n\
                         Content-length: %zu\r\nConnection: close\r\n\r\n";
 
-    File data = FILESYS.open(FS_path, "r");
+    File data = FILESYS.open(file_path, "r");
     if (data) {
-        sprintf(buf, resp, "200 OK", enc, HTTP_getMIME(FS_path), data.size());
+        sprintf(buf, resp, "200 OK", enc, HTTP_getMIME(file_path), data.size());
     } else {
         if(!(data = FILESYS.open("/s/404.html", "r"))) return true;
         sprintf(buf, resp, "400 Not Found", enc, HTTP_getMIME(".html"), data.size());
@@ -90,15 +82,15 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
 
     //http_client->write(data); // TODO: Bug Report
     http_client->write(buf, strlen(buf));
-    Serial.println(data.sendSize(http_client, data.size()));
-    Serial.println("Done T!");
+    data.sendSize(http_client, data.size());
     data.close();
     return true;
 }
 
 const char* HTTP_getMIME(const char* file){
     char ext[16]; strcat(strcpy(ext, strchr(file, (int)'.')), " ");
-    //TODO: FIX NO EXTENSION
+    // TODO: FIX NO EXTENSION
+    // TODO: Fix multiple ext
     if(strstr(".html .htm ", ext))
         return "text/html";
     if(strstr(".js ", ext))

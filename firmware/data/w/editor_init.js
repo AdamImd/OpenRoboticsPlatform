@@ -8,7 +8,7 @@ window.onload = function () {
         req.onloadend = function () {
             if(this.status != 200){
                 button.innerText = "ERROR: " + this.status + "(" + this.response.length + ")";
-                this.open("GET", "./editor.js", true);
+                this.open("GET", "./w/editor.js", true);
                 this.send();
                 return;
             }
@@ -17,7 +17,7 @@ window.onload = function () {
         };
         button.innerText = "Loading";
         req.timeout = 0;
-        req.open("GET", "./editor.js", true);
+        req.open("GET", "./w/editor.js", true);
         req.send();
     };    
 };

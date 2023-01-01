@@ -13,7 +13,7 @@ uint16_t read_init_handle(WebSocketsServer* server, void **global_data, uint8_t 
     Serial.println((char*)payload);
     Serial.println(length);
 
-    const size_t size = 512; size_t read; uint8_t buf[size];
+    const size_t size = 2*512; size_t read; uint8_t buf[size];
     File file = FILESYS.open((char*)payload, "r");
     if(file){
         do{
