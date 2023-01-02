@@ -1,23 +1,11 @@
 window.onload = function () {
-    window.name = "editor";
-    document.getElementById("editor_code_doc_start").onclick = function () {
-        button = this;
+    $("editor_code_doc_start").onclick = async function () {
+        window.name="editor";
+        var button = this;
         button.onclick = null;
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function() { button.innerText += "." };
-        req.onloadend = function () {
-            if(this.status != 200){
-                button.innerText = "ERROR: " + this.status + "(" + this.response.length + ")";
-                this.open("GET", "./w/editor.js", true);
-                this.send();
-                return;
-            }
-            $("editor_code_doc").removeChild(button);
-            eval(this.response);
-        };
         button.innerText = "Loading";
-        req.timeout = 0;
-        req.open("GET", "./w/editor.js", true);
-        req.send();
-    };    
+        var data = await read_file_HTTP("/w/editor.js", function(){ button.innerText += "."; });
+        $("editor_code_doc").removeChild(button);
+        window.eval(data);
+    };
 };

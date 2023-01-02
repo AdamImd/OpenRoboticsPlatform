@@ -56,15 +56,14 @@ document.onkeydown = function (event) {
 
 save.onclick = function () {
   editor_save_tab();
-  document.getElementById(editor.tab_id).className = "editor_tab";
 };
 
 var run_window = null;
 run.onclick = function () {
-  console.log("RUNING");
+  save.click();
   localStorage.setItem("exe_file_name", files[editor.tab_id][1]);
   if(run_window == null || run_window.closed)
-    run_window = window.open("./w/run.html", "run_window");
+    run_window = window.open("/w/run.html", "run_window");
   else
     run_window.focus();
 };
@@ -84,7 +83,7 @@ changes = StateField.define({
   create() { return 0 },
   update(value, tr) { 
     if(tr.docChanged)
-      document.getElementById(editor.tab_id).className = "unsaved_tab"
+      $(editor.tab_id).classList.add("unsaved_tab");
     return tr.docChanged ? value + 1 : value 
   }
 });
@@ -92,17 +91,31 @@ changes = StateField.define({
 
 //--------------------------------------
 
-  
 new_tab.onclick = function () {
-  open_tab("", "");
+  open_tab(null, "");
 };
 
-function open_tab(name, text) {
+async function open_tab(name, text = null) {
+  if(name){
+    var keys = Object.keys(files);
+    for (let i = 0; i < keys.length; i++) {
+      if(name == files[keys[i]][1]){
+        return $(keys[i]).click();
+      }
+    }
+  }
+
+  if (text == null){
+    var sock = await command_new_socket();
+    text = await read_file_command(sock, name);
+    sock.close();
+  }
+
   var tab = document.createElement("div")
   tab.setAttribute("id", "tab_"+file_id++);
   tab.setAttribute("class", "editor_tab");
   tab.addEventListener("click", editor_tab_click);
-  if(name != "")
+  if(name != null)
     tab.textContent = name;
   else
     tab.textContent = "New Tab: " + tab.id;
@@ -120,100 +133,63 @@ function open_tab(name, text) {
     ]}),
     name,
   ];
-  if(editor.tab_id)
-    files[editor.tab_id][0] = editor.state;
-  editor.setState(files[tab.id][0]);
-  editor.tab_id = tab.id;
+
+  tab.click();
 };
 
-
 function editor_tab_click(event) {
-  files[editor.tab_id][0] = editor.state;
+  if($(editor.tab_id)){
+    files[editor.tab_id] = [editor.state, editor.name];
+    $(editor.tab_id).classList.remove("editor_tab_selected");
+  }
   editor.setState(files[event.target.id][0]);
+  editor.name = files[event.target.id][1]
   editor.tab_id = event.target.id;
-  document.title = editor.tab_id;
-  console.log(editor.state.doc)
+  $(editor.tab_id).classList.add("editor_tab_selected");
 }
 
 //----------------------------
 
-function editor_save_new_filename(){
-  return prompt("Enter file save path: ");
-}
-
-function editor_save_tab(){
+async function editor_save_tab(){
+  var new_file;
   var file_path = files[editor.tab_id][1];
-  while(file_path == "")
-    file_path = editor_save_new_filename();
-    files[editor.tab_id][1] = file_path;
-    $(editor.tab_id).textContent = file_path;
   console.log(file_path);
-  console.log(editor.state);
+  console.log(editor.tab_id);
+  if(file_path == "" || file_path == null){
+    new_file = true;
+    file_path = prompt("Enter file save path: ");
+    if(file_path == "" || file_path == null) 
+      return
+    else {
+      if(file_path[0] != '/') file_path = "/" + file_path;
+      files[editor.tab_id][1] = file_path;
+      $(editor.tab_id).textContent = file_path;
+      editor.name = file_path;
+    }
+  } else{
+    new_file = false;
+  }
+
+  console.log("Here");
   
-  var data;
-  var size = 512;
-  var encoder = new TextEncoder();
-  var encoded_text = "";
+  var file_text = "";
   if(editor.state.doc.text)
-    encoded_text= encoder.encode(editor.state.doc.text.join("\n"));
+    file_text = editor.state.doc.text.join("\n");
   else if(editor.state.doc.children){
     editor.state.doc.children.forEach(doc => {
-      encoded_text += doc.text.join("\n") + "\n";
-    });
-    encoded_text= encoder.encode(encoded_text);
-  } else {
-    // TODO: ERROR!
-    return;
-  }
-  console.log(encoded_text);
-
-  var socket = new WebSocket("ws://" + location.hostname + ":81/");
-  socket.binaryType = "arraybuffer";
-
-  socket.addEventListener("message", function(event){
-      console.log(event.data);
-      if(event.data == ""){
-        console.log("Send 3");
-        socket.close();
-          return;
-      } else if (event.data == "\x01") {
-        console.log("Send 2");
-        console.log(data);
-        console.log(encoded_text.length);
-        if(data >= encoded_text.length){
-          console.log("SENDING FIN");
-          socket.send("\x01");
-        }else {
-          console.log("SENDING data");
-          socket.send(encoded_text.slice(data, data+size));
-          data += size;
-        }
-      } else {
-        socket.close();
-      }
-  });
-
-  socket.addEventListener("error", function(event){
-      console.log(event);
-      socket.close();
-  });
-
-  var buffer = new ArrayBuffer(128)
-  var buffer_num = new Uint16Array(buffer);
-  var buffer_chr = new Uint8Array(buffer);
-  buffer_num[0] = 2;
-  for (let i = 0; i  < file_path.length; i++)
-      buffer_chr[2+i] = Math.min(file_path.charCodeAt(i), 255);
-      // TODO: UTF-8
-
-  socket.addEventListener("open", function(event){
-      data = 0
-      socket.send(buffer);
-      console.log("Send 1");
-  });
+      file_text += doc.text.join("\n") + "\n";
+    }); } 
+  else
+    return; // TODO: Error
+  
+  var sock = await command_new_socket();
+  await save_file_command(sock, file_path, file_text);
+  sock.close();
+  if(new_file) editor_nav_init(open_tab);
+  $(editor.tab_id).classList.remove("unsaved_tab");
 }
-
 
 //----------------------------
 
-editor_nav_init(open_file, open_tab);
+editor_nav_init(open_tab);
+new_tab.click();

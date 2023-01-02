@@ -55,7 +55,9 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     char type[5], enc[16], file_path[64]; 
     sscanf(*path, "%s%s", type, file_path); // GET /***
     
-    if(!strcmp(file_path, "/")) strcpy(file_path, "/index.html");
+
+    if(!strcmp(file_path, "/")) strcpy(file_path, "/w/index.html");
+    if(!strcmp(file_path, "/favicon.ico")) strcpy(file_path, "/w/favicon.ico");
 
     if(!strcmp(file_path, "/w/editor.js")) // TODO: GZIP folder
         strcpy(enc, "gzip");
@@ -65,6 +67,7 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     if(!strcmp(file_path, "/s/tree.bin"))
         update_tree();
     
+    Serial.println(file_path);
     // TODO: Check/Chop flags on file_path
 
     const size_t size = 512; char buf[size];

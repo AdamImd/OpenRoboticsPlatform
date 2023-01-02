@@ -51,15 +51,18 @@
     float: left;
     border-style: groove;
     border-radius: 20%;
-    background-color: chartreuse;
+    background-color: rgb(155, 178, 221);
 }
 
-.unsaved_tab {
-    float: left;
-    border-style: groove;
-    border-radius: 20%;
-    background-color: chocolate;
+.editor_tab.unsaved_tab {
+    background-color: rgb(177, 129, 224);
 }
+
+.editor_tab_selected{
+    text-decoration: underline;
+    color: rgb(122, 18, 18);
+}
+
 
 
 /* Set editor Height */

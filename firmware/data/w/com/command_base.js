@@ -35,6 +35,22 @@ async function command_new_socket() {
 // --------------------------------------------------------------------
 // File I/O
 
+async function read_file_HTTP(file_name, callback = function(){}){
+    return new Promise(function (resolve) {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() { callback() };
+        req.onloadend = function () {
+            if(this.status != 200){
+                throw error("XMLHttpRequest Failed!");
+            }
+            resolve(this.response);
+        };
+        req.timeout = 0;
+        req.open("GET", file_name, true);
+        req.send();
+    });
+}
+
 async function read_file_command(socket, file_name){
     return new Promise(function (resolve) {
         var command_decoder = new TextDecoder();
@@ -72,3 +88,4 @@ async function save_file_command(socket, file_name, file_data){
 }
 
 // --------------------------------------------------------------------
+

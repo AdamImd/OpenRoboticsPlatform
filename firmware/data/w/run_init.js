@@ -8,12 +8,15 @@ window.onload = function () {
     $("run_file_path").value = localStorage.getItem("exe_file_name");
 
     addEventListener("storage", function(ev){
-        if (ev.key!='exe_file_name') return;
-        $("run_file_path").value = ev.newValue;
+        if (ev.key == 'exe_file_name')
+            $("run_file_path").value = ev.newValue;
+        if (ev.key == 'tree_data')
+            editor_nav_init(function(path){ $("run_file_path").value = path; }, ev.newValue);
     });
 
     $("run_file_execute").onclick = function (event) { 
-        file_execute($("run_file_path").value)};
+        file_execute($("run_file_path").value);
+    }
     
     document.onkeydown = function (event) {
         if (event.ctrlKey || event.altKey){
@@ -29,13 +32,16 @@ window.onload = function () {
 };
 
 
-function file_execute(path){
-    open_file(path, function(file_path, data) { 
-        try{
-            window.eval(data);
-        } catch (e) {
-            alert(e.lineNumber);
-            alert(e.message);
-            alert(e.name);
-        }});
+async function file_execute(path){
+    var sock = await command_new_socket();
+    var data = await read_file_command(sock, path);
+    sock.close();
+
+    try{
+        window.eval(data);
+    } catch (e) {
+        alert(e.lineNumber);
+        alert(e.message);
+        alert(e.name);
+    };
 }
