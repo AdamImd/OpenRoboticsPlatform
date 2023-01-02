@@ -106,9 +106,9 @@ async function open_tab(name, text = null) {
   }
 
   if (text == null){
-    var sock = await command_new_socket();
-    text = await read_file_command(sock, name);
-    sock.close();
+    var sock = await command_new_socket(false);
+    text = await read_file_command(name, sock);
+    command_close_socket(sock);
   }
 
   var tab = document.createElement("div")
@@ -182,9 +182,10 @@ async function editor_save_tab(){
   else
     return; // TODO: Error
   
-  var sock = await command_new_socket();
-  await save_file_command(sock, file_path, file_text);
-  sock.close();
+  var sock = await command_new_socket(false);
+  await save_file_command(file_path, file_text, sock);
+  command_close_socket(sock);
+
   if(new_file) editor_nav_init(open_tab);
   $(editor.tab_id).classList.remove("unsaved_tab");
 }

@@ -1,7 +1,7 @@
 var command_encoder = new TextEncoder();
-//var global_socket; // TODO: Use as default
+var global_socket = null; // TODO: Use as default
 
-function command(socket, num, text, callback_fun){
+function command(num, text, callback_fun, socket){
     socket.message_fun = callback_fun;
     var buffer = command_encoder.encode("\0\0" + text);
     var buffer_num = new Uint16Array([num]).buffer;
@@ -10,7 +10,7 @@ function command(socket, num, text, callback_fun){
     return;
 }
 
-async function command_new_socket() {
+async function command_new_socket(use_global = true) {
     return new Promise(function (resolve) {
         var socket = new WebSocket("ws://" + location.hostname + ":81/");
         socket.binaryType = "arraybuffer";
@@ -29,7 +29,16 @@ async function command_new_socket() {
         socket.addEventListener("open", function(event){
             resolve(socket); 
         });  
+        if(use_global) {
+            if(global_socket)
+                global_socket.close();
+            global_socket = socket;
+        }
     });
+}
+
+function command_close_socket(socket = global_socket) {
+    socket.close();
 }
 
 // --------------------------------------------------------------------
@@ -51,7 +60,7 @@ async function read_file_HTTP(file_name, callback = function(){}){
     });
 }
 
-async function read_file_command(socket, file_name){
+async function read_file_command(file_name, socket = global_socket){
     return new Promise(function (resolve) {
         var command_decoder = new TextDecoder();
         var data = "";
@@ -61,11 +70,11 @@ async function read_file_command(socket, file_name){
             else
                 data+= (command_decoder.decode(event.data, {stream:true}));
         }
-        command(socket, 1, file_name, callback);
+        command(1, file_name, callback, socket);
     });
 }
 
-async function save_file_command(socket, file_name, file_data){
+async function save_file_command(file_name, file_data, socket = global_socket){
     return new Promise(function (resolve) {
         var encoded_data = command_encoder.encode(file_data);
         var data_offset = 0;
@@ -83,9 +92,27 @@ async function save_file_command(socket, file_name, file_data){
             } else
                 resolve(0);
         }
-        command(socket, 2, file_name, callback);
+        command(2, file_name, callback, socket);
     });
 }
 
 // --------------------------------------------------------------------
+// Hardware I/O
 
+async function pin_mode_command(modes, socket = global_socket){ // Modes: [[Pin, Mode],[Pin,Mode]...]
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve(data);
+        }
+        command(20, modes, callback, socket);
+    });
+}
+
+async function digital_write_command(outputs, socket = global_socket){ // Modes: [[Pin, Mode],[Pin,Mode]...]
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve(data);
+        }
+        command(20, modes, callback, socket);
+    });
+}

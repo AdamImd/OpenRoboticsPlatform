@@ -10,7 +10,6 @@ uint16_t command_list_len_max = 0;
 const uint8_t command_len = 128;
 //char command[WEBSOCKETS_SERVER_CLIENT_MAX][command_len];
 uint16_t command_state[WEBSOCKETS_SERVER_CLIENT_MAX];
-void* command_data[WEBSOCKETS_SERVER_CLIENT_MAX];
 static WebSocketsServer Command_server(81, "/");
 
 
@@ -51,7 +50,7 @@ uint16_t Command_handle(uint8_t client_num, WStype_t event_type, uint8_t * paylo
     if(command_state[client_num]){
         for (int i = 0; i < command_list_len; i++)
             if(command_list[i].command_num == command_state[client_num])
-                command_state[client_num] = command_list[i].command_rw_handle(&Command_server, &command_data[i], client_num, event_type, payload, length);
+                command_state[client_num] = command_list[i].command_rw_handle(&Command_server, client_num, event_type, payload, length);
     } else {
         switch (event_type) {
             case WStype_DISCONNECTED:
@@ -83,7 +82,7 @@ uint16_t Command_execute(uint8_t client_num, uint8_t * payload, size_t length){
          Serial.println(command_list[i].command_num);
         if(command_list[i].command_num == *event_num){
             Serial.println("EXE TIME 3");
-            return command_list[i].command_init_handle(&Command_server, &command_data[i], client_num, payload_data, length - sizeof(uint16_t));
+            return command_list[i].command_init_handle(&Command_server, client_num, payload_data, length - sizeof(uint16_t));
         }
     }
     // TODO: Error handle

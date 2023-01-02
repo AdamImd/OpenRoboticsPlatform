@@ -7,8 +7,8 @@
 
 struct command{
     uint16_t command_num;
-    uint16_t (*command_init_handle) (WebSocketsServer* server, void** global_data, uint8_t client_num, uint8_t * payload, size_t length);
-    uint16_t (*command_rw_handle) (WebSocketsServer* server, void** global_data, uint8_t client_num, WStype_t event_type, uint8_t * payload, size_t length);
+    uint16_t (*command_init_handle) (WebSocketsServer* server, uint8_t client_num, uint8_t * payload, size_t length);
+    uint16_t (*command_rw_handle) (WebSocketsServer* server, uint8_t client_num, WStype_t event_type, uint8_t * payload, size_t length);
 };
 
 void Command_init();

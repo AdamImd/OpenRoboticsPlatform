@@ -33,9 +33,9 @@ window.onload = function () {
 
 
 async function file_execute(path){
-    var sock = await command_new_socket();
-    var data = await read_file_command(sock, path);
-    sock.close();
+    var sock = await command_new_socket(false);
+    var data = await read_file_command(path, sock);
+    command_close_socket(sock);
 
     try{
         window.eval(data);

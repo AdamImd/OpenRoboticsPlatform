@@ -7,9 +7,45 @@
 
 #define READ_NUM 1
 #define WRITE_NUM 2
+#define DIGITAL_MODE_NUM 20
+#define DIGITAL_OUTPUT_NUM 21
 
-uint16_t read_init_handle(WebSocketsServer* server, void **global_data, uint8_t client_num, uint8_t *payload, size_t length){
-    Serial.println("REEAd");
+uint16_t read_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+uint16_t write_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+uint16_t write_rw_handle(WebSocketsServer* server, uint8_t client_num, WStype_t event_type, uint8_t * payload, size_t length);
+uint16_t digital_mode_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+uint16_t digital_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+
+void base_commands_init(){
+    command read;
+    read.command_num = READ_NUM;
+    read.command_init_handle = &read_init_handle;
+    read.command_rw_handle = nullptr;
+    Command_list_add(read);
+
+    command write;
+    write.command_num = WRITE_NUM;
+    write.command_init_handle = &write_init_handle;
+    write.command_rw_handle = &write_rw_handle;
+    Command_list_add(write);
+
+    command digital_mode;
+    digital_mode.command_num = DIGITAL_MODE_NUM;
+    digital_mode.command_init_handle = &digital_mode_init_handle;
+    digital_mode.command_rw_handle = nullptr;
+    Command_list_add(digital_mode);
+
+    command digital_output;
+    digital_output.command_num = DIGITAL_OUTPUT_NUM;
+    digital_output.command_init_handle = &digital_output_init_handle;
+    digital_output.command_rw_handle = nullptr;
+    Command_list_add(digital_output);
+}
+
+// -------------------------------------------------------
+
+uint16_t read_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    Serial.println("Read");
     Serial.println((char*)payload);
     Serial.println(length);
 
@@ -32,14 +68,13 @@ struct file_data{
     File file;
 };
 
+// -------------------------------------------------------
+
 // TODO: Remove
 file_data write_files[WEBSOCKETS_SERVER_CLIENT_MAX];
 
-uint16_t write_init_handle(WebSocketsServer* server, void **global_data, uint8_t client_num, uint8_t *payload, size_t length){
-    Serial.println("WRIITRE");
-    Serial.println((char*)payload);
-    Serial.println(length);
-
+uint16_t write_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    Serial.println("Write");
     write_files[client_num] = {FILESYS.open((char*)payload, "w")};
 
     if(!write_files[client_num].file){
@@ -50,9 +85,8 @@ uint16_t write_init_handle(WebSocketsServer* server, void **global_data, uint8_t
     return WRITE_NUM;
 }
 
-uint16_t write_rw_handle(WebSocketsServer* server, void** global_data, uint8_t client_num, WStype_t event_type, uint8_t * payload, size_t length){
-    Serial.println("WRIITRE 2");
-    Serial.println(event_type);
+uint16_t write_rw_handle(WebSocketsServer* server, uint8_t client_num, WStype_t event_type, uint8_t * payload, size_t length){
+    Serial.println("Write (callback)");
     if(event_type != WStype_BIN && event_type != WStype_TEXT) 
         return WRITE_NUM;
 
@@ -83,16 +117,29 @@ uint16_t write_rw_handle(WebSocketsServer* server, void** global_data, uint8_t c
 }
 
 
-void base_commands_init(){
-    command read;
-    read.command_num = READ_NUM;
-    read.command_init_handle = &read_init_handle;
-    read.command_rw_handle = nullptr;
-    Command_list_add(read);
+// -------------------------------------------------------
 
-    command write;
-    write.command_num = WRITE_NUM;
-    write.command_init_handle = &write_init_handle;
-    write.command_rw_handle = &write_rw_handle;
-    Command_list_add(write);
+uint16_t digital_mode_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    Serial.println("MODE");
+    Serial.println(length);
+
+    for(size_t i = 0; i< length; i+=2)
+        pinMode(payload[i], payload[i+1]);
+    
+    server->sendTXT(client_num, "\x00");
+    return 0;
 }
+
+
+uint16_t digital_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    Serial.println("DIO");
+    Serial.println(length);
+
+    for(size_t i = 0; i< length; i+=2)
+        digitalWrite(payload[i], payload[i+1]);
+    
+    server->sendTXT(client_num, "\x00");
+    return 0;
+}
+
+// -------------------------------------------------------
