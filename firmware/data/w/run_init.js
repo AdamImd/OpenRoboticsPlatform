@@ -29,6 +29,8 @@ window.onload = function () {
             $("run_file_execute").click();
         }
     };
+
+    command_new_socket(); // Create global WS connection.
 };
 
 

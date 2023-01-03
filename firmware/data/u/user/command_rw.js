@@ -1,16 +1,13 @@
 async function main(){
-    var sock = await command_new_socket(true);
-    var str = "Hello 🔥\n";
-
-    var data = await save_file_command("/test.txt", str, sock);
-    console.log(data);
-
-    var data = await read_file_command("/test.txt", sock);
-    console.log(data);
-    console.log(data == str);
-    console.log(data === str);
-
-    command_close_socket(sock);
-}
-
-main();
+    //await command_new_socket();
+    let LED_BUILTIN = 2;
+    let OUTPUT = 1;
+    await pin_mode_command([[LED_BUILTIN, OUTPUT]]);
+    
+    for (let i = 0; i < 1024; i++) {
+      await analog_write_command([[LED_BUILTIN, i]]);
+      await sleep(1);
+    }
+  }
+  
+  main();

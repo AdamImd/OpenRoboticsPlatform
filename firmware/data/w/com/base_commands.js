@@ -1,11 +1,31 @@
 var command_encoder = new TextEncoder();
 var global_socket = null; // TODO: Use as default
 
-function command(num, text, callback_fun, socket){
+// --------------------------------------------------------------------
+
+async function sleep(ms){
+    return new Promise(function (resolve) {
+        setTimeout(function(){ resolve(); }, ms);
+    });
+}
+
+// --------------------------------------------------------------------
+
+function command_text(num, text, callback_fun, socket){
     socket.message_fun = callback_fun;
     var buffer = command_encoder.encode("\0\0" + text);
     var buffer_num = new Uint16Array([num]).buffer;
     buffer.set(new Uint8Array(buffer_num));
+    socket.send(buffer);
+    return;
+}
+
+function command_binary(num, bin, callback_fun, socket){
+    socket.message_fun = callback_fun;
+    var buffer = new Uint8Array(bin.length + 2);
+    var buffer_num = new Uint16Array([num]).buffer;
+    buffer.set(new Uint8Array(buffer_num));
+    buffer.set(new Uint8Array(bin), 2);
     socket.send(buffer);
     return;
 }
@@ -70,7 +90,7 @@ async function read_file_command(file_name, socket = global_socket){
             else
                 data+= (command_decoder.decode(event.data, {stream:true}));
         }
-        command(1, file_name, callback, socket);
+        command_text(1, file_name, callback, socket);
     });
 }
 
@@ -92,7 +112,7 @@ async function save_file_command(file_name, file_data, socket = global_socket){
             } else
                 resolve(0);
         }
-        command(2, file_name, callback, socket);
+        command_text(2, file_name, callback, socket);
     });
 }
 
@@ -102,17 +122,44 @@ async function save_file_command(file_name, file_data, socket = global_socket){
 async function pin_mode_command(modes, socket = global_socket){ // Modes: [[Pin, Mode],[Pin,Mode]...]
     return new Promise(function (resolve) {
         function callback(event) {
-            resolve(data);
+            resolve();
         }
-        command(20, modes, callback, socket);
+        let buffer = new Uint8Array(2 * modes.length);
+        for (let i = 0; i < modes.length; i++) {
+            buffer[2*i + 0] = modes[i][0];
+            buffer[2*i + 1] = modes[i][1];
+        }
+        command_binary(20, buffer, callback, socket);
     });
 }
 
 async function digital_write_command(outputs, socket = global_socket){ // Modes: [[Pin, Mode],[Pin,Mode]...]
     return new Promise(function (resolve) {
         function callback(event) {
-            resolve(data);
+            resolve();
         }
-        command(20, modes, callback, socket);
+        let buffer = new Uint8Array(2 * outputs.length);
+        for (let i = 0; i < outputs.length; i++) {
+            buffer[2*i + 0] = outputs[i][0];
+            buffer[2*i + 1] = outputs[i][1];
+        }
+        command_binary(21, buffer, callback, socket);
+    });
+}
+
+async function analog_write_command(outputs, socket = global_socket){ // Modes: [[Pin, Mode],[Pin,Mode]...]
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve();
+        }
+        let output_value = new Uint16Array(1);
+        let buffer = new Uint8Array(3 * outputs.length);
+        for (let i = 0; i < outputs.length; i++) {
+            buffer[3*i + 0] = outputs[i][0];
+            output_value[0] = outputs[i][1];
+            buffer.set(new Uint8Array(output_value.buffer), 3*i + 1);
+        }
+        console.log(buffer);
+        command_binary(22, buffer, callback, socket);
     });
 }
