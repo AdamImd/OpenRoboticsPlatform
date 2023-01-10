@@ -2,6 +2,8 @@ function $(doc) {
     return document.getElementById(doc);
 }
 
+var enable = false;
+
 window.onload = function () {
     editor_nav_init(function(path){ $("run_file_path").value = path; });
 
@@ -14,9 +16,20 @@ window.onload = function () {
             editor_nav_init(function(path){ $("run_file_path").value = path; }, ev.newValue);
     });
 
-    $("run_file_execute").onclick = function (event) { 
-        file_execute($("run_file_path").value);
-    }
+    $("run_file_execute").onclick = execute_file; 
+    function execute_file (event) {
+        $("run_file_execute").onclick = null;
+        $("run_file_path").style.backgroundColor = "green";
+        enable = true;
+        require($("run_file_path").value);
+    };
+
+    $("run_file_stop").onclick = stop_execute_file; 
+    function stop_execute_file (event) {
+        $("run_file_execute").onclick = execute_file;
+        $("run_file_path").style.backgroundColor = "red";
+        enable = false;
+    };
     
     document.onkeydown = function (event) {
         if (event.ctrlKey || event.altKey){
@@ -25,25 +38,13 @@ window.onload = function () {
             }
         }
         if(event.key == " "){
-            event.preventDefault();
             $("run_file_execute").click();
+        }
+        if(event.key == "Escape"){
+            $("run_file_stop").click();
         }
     };
 
     command_new_socket(); // Create global WS connection.
 };
 
-
-async function file_execute(path){
-    var sock = await command_new_socket(false);
-    var data = await read_file_command(path, sock);
-    command_close_socket(sock);
-
-    try{
-        window.eval(data);
-    } catch (e) {
-        alert(e.lineNumber);
-        alert(e.message);
-        alert(e.name);
-    };
-}

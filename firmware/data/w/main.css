@@ -133,3 +133,10 @@ ul, #editor_nav_tree {
   max-height: 300px;
   overflow: scroll;
 }
+
+/* Input Square */
+
+.input_square {
+    background-color: crimson;
+    border-style: double;
+}

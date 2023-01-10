@@ -153,8 +153,6 @@ function editor_tab_click(event) {
 async function editor_save_tab(){
   var new_file;
   var file_path = files[editor.tab_id][1];
-  console.log(file_path);
-  console.log(editor.tab_id);
   if(file_path == "" || file_path == null){
     new_file = true;
     file_path = prompt("Enter file save path: ");
@@ -170,8 +168,6 @@ async function editor_save_tab(){
     new_file = false;
   }
 
-  console.log("Here");
-  
   var file_text = "";
   if(editor.state.doc.text)
     file_text = editor.state.doc.text.join("\n");

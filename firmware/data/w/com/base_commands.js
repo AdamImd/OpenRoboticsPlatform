@@ -9,6 +9,20 @@ async function sleep(ms){
     });
 }
 
+async function require(path){
+    var sock = await command_new_socket(false);
+    var data = await read_file_command(path, sock);
+    command_close_socket(sock);
+
+    try{
+        window.eval(data);
+    } catch (e) {
+        alert(e.lineNumber);
+        alert(e.message);
+        alert(e.name);
+    };
+}
+
 // --------------------------------------------------------------------
 
 function command_text(num, text, callback_fun, socket){
@@ -119,6 +133,7 @@ async function save_file_command(file_name, file_data, socket = global_socket){
 // --------------------------------------------------------------------
 // Hardware I/O
 
+var OUTPUT = 1;
 async function pin_mode_command(modes, socket = global_socket){ // Modes: [[Pin, Mode],[Pin,Mode]...]
     return new Promise(function (resolve) {
         function callback(event) {
@@ -159,7 +174,6 @@ async function analog_write_command(outputs, socket = global_socket){ // Modes: 
             output_value[0] = outputs[i][1];
             buffer.set(new Uint8Array(output_value.buffer), 3*i + 1);
         }
-        console.log(buffer);
         command_binary(22, buffer, callback, socket);
     });
 }
