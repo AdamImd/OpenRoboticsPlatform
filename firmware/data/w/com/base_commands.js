@@ -76,6 +76,36 @@ function command_close_socket(socket = global_socket) {
 }
 
 // --------------------------------------------------------------------
+// Misc
+
+async function get_ESP_IP(socket = global_socket){
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve(event.data);
+        }
+        command_text(8, "", callback, socket);
+    });
+}
+
+async function wifi_connect(ssid, password, socket = global_socket){
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve();
+        }
+        command_text(9, ssid + "\x00" + password + "\x00" , callback, socket);
+    });
+}
+
+async function wifi_get_ssid(socket = global_socket){
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve(event.data);
+        }
+        command_text(10, "" , callback, socket);
+    });
+}
+
+// --------------------------------------------------------------------
 // File I/O
 
 async function read_file_HTTP(file_name, callback = function(){}){

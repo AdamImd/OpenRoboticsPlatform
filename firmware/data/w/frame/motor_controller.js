@@ -4,9 +4,9 @@ var driver = class driver_class {
         this.m1_d1 = motor1_D1;
         this.m1_d2 = motor1_D2;
         this.m1_inv = false;
-        this.m2_e = motor2_D1;
+        this.m2_e = motor2_enable;
         this.m2_d1 = motor2_D2;
-        this.m2_d2 = motor2_enable;
+        this.m2_d2 = motor2_D1;
         this.m2_inv = false;
         this.e = enable; // TODO: Actually disable
 
@@ -29,4 +29,4 @@ var driver = class driver_class {
         digital_write_command([[m1_dir[0], 0], [m1_dir[1], 1], 
            [m2_dir[0], 0], [m2_dir[1], 1]]);
     }
-}
+};

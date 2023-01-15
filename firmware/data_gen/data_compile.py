@@ -8,15 +8,15 @@ import glob
 import re
 
 def form(data, rep):
-    for tag in rep.keys():
-        re_str = rep[tag][0][0] + "(.*?)" + rep[tag][0][1]
-        data = re.sub(re_str, rep[tag][1], data, flags=re.DOTALL)
+    for replacement in rep:
+        re_str = replacement[0][0] + "(.*?)" + replacement[0][1]
+        data = re.sub(re_str, replacement[1], data, flags=re.DOTALL)
     return data
 
-repl = dict()
+repl = []
 for f in glob.iglob("./macro/**/*", recursive=True):
     with open(f, "r") as r:
-        repl[f.split('/')[-1]]=(f.split('/')[-1].split("&") ,r.read())
+        repl.append([r.readline().split("&"), r.read()])
 
 for f in glob.iglob("../data/**/*.html", recursive=True):
     dat = ""

@@ -66,3 +66,60 @@ async function editor_nav_init(callback, data = null) {
     };
 }
 
+var remote_IP;
+var local_IP;
+window.addEventListener("load", function () {
+    $("switch_IP").onclick = init_connection;
+});
+
+async function init_connection() {
+    console.log("INTI");
+    let sock = await command_new_socket(false);
+    await wifi_connect("DinnakenResidence", "Argyle!920", sock);
+    let ssid = await wifi_get_ssid(sock);
+    command_close_socket(sock);
+    $("switch_IP").onclick = connecting;
+    $("switch_IP_label").innerText = "Connecting...";
+    console.log(ssid);
+}
+
+async function connecting() {
+    console.log("CONN");
+    let sock = await command_new_socket(false);
+    let rawIPs = await get_ESP_IP(sock);
+    command_close_socket(sock);
+    let bytes = new Uint8Array(rawIPs);
+    remote_IP = bytes[0].toString() + "." 
+                + bytes[1].toString() + "." 
+                + bytes[2].toString() + "." 
+                + bytes[3].toString();
+    local_IP = bytes[4].toString() + "." 
+                + bytes[5].toString() + "." 
+                + bytes[6].toString() + "." 
+                + bytes[7].toString();
+    console.log(remote_IP);
+    console.log(local_IP);
+
+    if(local_IP != "0.0.0.0"){
+        $("switch_IP_label").innerText = "Click here to switch to new network:";
+        $("switch_IP").onclick = connect_to_external;
+    }
+};
+
+async function connect_to_external() {
+    console.log("ext");
+    let sock = await command_new_socket(false);
+    let rawIPs = await get_ESP_IP(sock);
+    command_close_socket(sock);
+    let bytes = new Uint8Array(rawIPs);
+    remote_IP = bytes[0].toString() + "." 
+                + bytes[1].toString() + "." 
+                + bytes[2].toString() + "." 
+                + bytes[3].toString();
+    local_IP = bytes[4].toString() + "." 
+                + bytes[5].toString() + "." 
+                + bytes[6].toString() + "." 
+                + bytes[7].toString();
+    console.log(remote_IP);
+    console.log(local_IP);
+};

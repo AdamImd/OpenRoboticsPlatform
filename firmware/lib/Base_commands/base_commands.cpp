@@ -7,6 +7,9 @@
 
 #define READ_NUM 1
 #define WRITE_NUM 2
+#define IP_NUM 8
+#define WIFI_CONNECT_NUM 9
+#define WIFI_GET_SSID_NUM 10
 #define DIGITAL_MODE_NUM 20
 #define DIGITAL_OUTPUT_NUM 21
 #define ANALOG_OUTPUT_NUM 22
@@ -14,6 +17,9 @@
 uint16_t read_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t write_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t write_rw_handle(WebSocketsServer* server, uint8_t client_num, WStype_t event_type, uint8_t * payload, size_t length);
+uint16_t ip_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+uint16_t wifi_connect_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+uint16_t wifi_get_ssid_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t digital_mode_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t digital_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t analog_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
@@ -32,6 +38,24 @@ void base_commands_init(){
     write.command_init_handle = &write_init_handle;
     write.command_rw_handle = &write_rw_handle;
     Command_list_add(write);
+
+    command ip;
+    ip.command_num = IP_NUM;
+    ip.command_init_handle = &ip_init_handle;
+    ip.command_rw_handle = nullptr;
+    Command_list_add(ip);
+
+    command wifi_connect;
+    wifi_connect.command_num = WIFI_CONNECT_NUM;
+    wifi_connect.command_init_handle = &wifi_connect_init_handle;
+    wifi_connect.command_rw_handle = nullptr;
+    Command_list_add(wifi_connect);
+
+    command wifi_get_ssid;
+    wifi_get_ssid.command_num = WIFI_GET_SSID_NUM;
+    wifi_get_ssid.command_init_handle = &wifi_get_ssid_init_handle;
+    wifi_get_ssid.command_rw_handle = nullptr;
+    Command_list_add(wifi_get_ssid);
     
     command digital_mode;
     digital_mode.command_num = DIGITAL_MODE_NUM;
@@ -125,7 +149,39 @@ uint16_t write_rw_handle(WebSocketsServer* server, uint8_t client_num, WStype_t 
     return 0;
 }
 
+// -------------------------------------------------------
 
+uint16_t ip_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    Serial.println("IPs");
+    uint64_t sta = WiFi.softAPIP().v4();
+    uint64_t local = WiFi.localIP().v4();
+    uint64_t IPs = (sta << 32) + (local << 0);
+    server->sendBIN(client_num, (uint8_t*)&IPs, sizeof(IPs));
+    return 0;
+}
+
+uint16_t wifi_connect_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    Serial.println("CONN");
+    Serial.println(length);
+    Serial.println((char*)payload);
+    Serial.println(strlen((char*)payload));
+    Serial.println((char*)payload+strlen((char*)payload)+1);
+    Serial.println(strlen((char*)payload+strlen((char*)payload)+1));
+    WiFi.begin((char*)payload, (char*)payload+strlen((char*)payload)+1);
+    server->sendTXT(client_num, "\x00");
+    return 0;
+}
+
+uint16_t wifi_get_ssid_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    Serial.println("WIFI");
+    String network_list = "";
+    int8_t networks = WiFi.scanNetworks();
+    for(int8_t i = 0; i< networks; i++){
+        network_list += WiFi.SSID(i) + "\x00";
+    }
+    server->sendTXT(client_num, network_list);
+    return 0;
+}
 // -------------------------------------------------------
 
 uint16_t digital_mode_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){

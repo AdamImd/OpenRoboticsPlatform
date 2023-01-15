@@ -31,7 +31,7 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Started...");
 
-    /*
+    
     WiFi_connected_public = WiFi.onStationModeGotIP([](const WiFiEventStationModeGotIP& event)
     {
         HTTP_server_public = (WiFiServer*)malloc(sizeof(WiFiServer));
@@ -52,15 +52,12 @@ void setup() {
         Serial.println(WiFi.localIP());
         Serial.println("-------------------");
     });
-    */
+    
 
     WiFi.mode(WIFI_AP_STA);
     WiFi.hostname(hostname);
     WiFi.softAPConfig(localhost, localhost, subnet);
     WiFi.softAP(ssid,pass,1,0,max_conn);
-
-    //WiFi.begin("rumble");
-    //WiFi.begin("DinnakenResidence", "Argyle!920");
 
     //Serial.println(MDNS.begin("test"));
 
@@ -81,6 +78,6 @@ void loop() {
     //DNS_server.processNextRequest();
     
     HTTP_loop(&HTTP_server_private);
-    //HTTP_loop(HTTP_server_public);
+    HTTP_loop(HTTP_server_public);
     Command_loop();
 }

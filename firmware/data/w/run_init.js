@@ -4,7 +4,7 @@ function $(doc) {
 
 var enable = false;
 
-window.onload = function () {
+window.addEventListener("load", async function () {
     editor_nav_init(function(path){ $("run_file_path").value = path; });
 
     $("run_file_path").value = localStorage.getItem("exe_file_name");
@@ -21,6 +21,7 @@ window.onload = function () {
         $("run_file_execute").onclick = null;
         $("run_file_path").style.backgroundColor = "green";
         enable = true;
+        await command_new_socket(); // Create global WS connection.
         require($("run_file_path").value);
     };
 
@@ -28,6 +29,7 @@ window.onload = function () {
     function stop_execute_file (event) {
         $("run_file_execute").onclick = execute_file;
         $("run_file_path").style.backgroundColor = "red";
+        command_close_socket();
         enable = false;
     };
     
@@ -44,7 +46,5 @@ window.onload = function () {
             $("run_file_stop").click();
         }
     };
-
-    command_new_socket(); // Create global WS connection.
-};
+});
 

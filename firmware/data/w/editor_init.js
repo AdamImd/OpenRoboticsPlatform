@@ -1,4 +1,4 @@
-window.onload = function () {
+window.addEventListener("load",  function () {
     $("editor_code_doc_start").onclick = async function () {
         window.name="editor";
         var button = this;
@@ -8,4 +8,4 @@ window.onload = function () {
         $("editor_code_doc").removeChild(button);
         window.eval(data);
     };
-};
+});
