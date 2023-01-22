@@ -17,7 +17,7 @@ window.addEventListener("load", async function () {
     });
 
     $("run_file_execute").onclick = execute_file; 
-    function execute_file (event) {
+    async function execute_file (event) {
         $("run_file_execute").onclick = null;
         $("run_file_path").style.backgroundColor = "green";
         enable = true;
