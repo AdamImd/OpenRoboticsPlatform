@@ -8,9 +8,9 @@
 
 void FS_init();
 
-void HTTP_init(WiFiServer* http_server);
-void HTTP_loop(WiFiServer* http_server);
-bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length);
+void HTTP_init(WiFiServerSecure* http_server);
+void HTTP_loop(WiFiServerSecure* http_server);
+bool HTTP_handle(WiFiClientSecure* http_client, char** path, size_t* length);
 const char* HTTP_getMIME(const char* file);
 void update_tree();
 void set_tree_dirty(bool dirty);

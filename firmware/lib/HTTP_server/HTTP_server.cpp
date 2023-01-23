@@ -1,5 +1,8 @@
 #include "HTTP_server.h"
 #include <ESP8266WiFi.h>
+#include <WiFiServerSecure.h>
+#include <WiFiClientSecure.h>
+#include <WiFiClientSecureBearSSL.h>
 #include <LittleFS.h>
 
 static bool tree_dirty;
@@ -12,19 +15,20 @@ void FS_init(){
 
 void set_tree_dirty(bool dirty) { tree_dirty = dirty; }
 
-void HTTP_init(WiFiServer* http_server){
+void HTTP_init(WiFiServerSecure* http_server){
     if(http_server == nullptr) return;
     http_server->setNoDelay(false); // TODO: CHECK?
-    http_server->begin(80, 16);
-    WiFiClient::setDefaultNoDelay(true);
+    http_server->begin(443, 16);
+    //WiFiClient::setDefaultNoDelay(true);
     WiFiClient::setDefaultSync(false);
 }
 
-void HTTP_loop(WiFiServer* http_server) {
+void HTTP_loop(WiFiServerSecure* http_server) {
     if(http_server == nullptr) return;
-    WiFiClient http_client = http_server->available();
+    WiFiClientSecure http_client = http_server->available();
     http_client.setTimeout(0);
     if(http_client){
+        Serial.println("HERE!!!!!!"); // TEST
         size_t len = HEADER_LEN;
         char* resource_path = (char*)calloc(len, sizeof(char)); 
         while(http_client.connected())
@@ -39,7 +43,7 @@ void HTTP_loop(WiFiServer* http_server) {
     }
 }
 
-bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
+bool HTTP_handle(WiFiClientSecure* http_client, char** path, size_t* length){
     size_t path_len = strlen(*path); 
     size_t remaining = *length - path_len;
     if(http_client->readBytes(*path + path_len, remaining) == remaining){
@@ -84,7 +88,7 @@ bool HTTP_handle(WiFiClient* http_client, char** path, size_t* length){
     if(!data) Serial.println("FS ERROR: Files missing!");
 
     //http_client->write(data); // TODO: Bug Report
-    http_client->write(buf, strlen(buf));
+    http_client->write((uint8_t*)buf, strlen(buf));
     data.sendSize(http_client, data.size());
     data.close();
     return true;

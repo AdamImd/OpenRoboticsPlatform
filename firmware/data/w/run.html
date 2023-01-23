@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
+        
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet/dist/posenet.min.js"></script>
+        <script src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+
         <meta charset="utf-8">
         <title>Run Script</title>
         <link rel="stylesheet" href="/w/main.css">
@@ -41,6 +46,12 @@
                 <button id="run_file_execute">RUN</button>
                 <button id="run_file_stop">STOP</button>
                 <div id="run_windows">
+                    
+                    
+                    <video id="webcam" autoplay playsinline width="640" height="480"></video>
+                    <canvas id="canvas" class="d-none"></canvas>
+                    <audio id="snapSound" src="audio/snap.wav" preload = "auto"></audio>     
+
                     
                 </div>
             </div>

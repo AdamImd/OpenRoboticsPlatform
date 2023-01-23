@@ -23,6 +23,18 @@ async function require(path){
     };
 }
 
+async function require_HTTP(path){
+    var data = await read_file_HTTP(path);
+
+    try{
+        window.eval(data);
+    } catch (e) {
+        alert(e.lineNumber);
+        alert(e.message);
+        alert(e.name);
+    };
+}
+
 // --------------------------------------------------------------------
 
 function command_text(num, text, callback_fun, socket){

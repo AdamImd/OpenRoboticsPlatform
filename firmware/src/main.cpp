@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include <DNSServer.h>
 #include <ESP8266WiFi.h>
+#include <WiFiServerSecure.h>
+#include <WiFiClientSecure.h>
+#include <WiFiClientSecureBearSSL.h>
 #include <LittleFS.h>
 #include <WebSocketsServer.h>
 #include <ESP8266mDNS.h>
@@ -21,21 +24,53 @@ const int max_conn = 4;
 const IPAddress localhost = IPAddress(192, 168, 0, 1);
 const IPAddress subnet = IPAddress(255, 255, 255, 0);
 
-WiFiServer HTTP_server_private(localhost, 80);
-WiFiServer* HTTP_server_public = nullptr;
+WiFiServerSecure HTTP_server_private(localhost, 443);
+ServerSessions serverCache(5);
+
+//WiFiServerSecure* HTTP_server_public = nullptr;
 DNSServer DNS_server; // Disable?
 
 //------------------------------
+    static const char serverCert[] = R"EOF(
+-----BEGIN CERTIFICATE-----
+MIIB4TCCAYugAwIBAgIUMnz1dWpXntAo0b9EWOLrBrsLHP8wDQYJKoZIhvcNAQEL
+BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMzAxMjMwMjIxMTBaFw0zNDA0
+MTEwMjIxMTBaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
+HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwXDANBgkqhkiG9w0BAQEF
+AANLADBIAkEA0J2DzBniqad/xzrETA/WlYDMuzKHfdKduMIPmQ9UR52GNZ69l/W/
+2sIvl/eR8GCFAA2zvFi3cL5umxUEUhUN8QIDAQABo1MwUTAdBgNVHQ4EFgQUflNG
+3EyF4P3RASg8SWluE/mAFjAwHwYDVR0jBBgwFoAUflNG3EyF4P3RASg8SWluE/mA
+FjAwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAANBAE53TRkan/cXwynD
+9MtaXG7IMek5GyajiPxHy2oQ3zfS7Nj6K9gcFU/Hg2kVRDQZZfnhknsgrmXrPOc/
+vi6bpQY=
+-----END CERTIFICATE-----
+
+)EOF";
+
+static const char serverKey[] = R"EOF(
+-----BEGIN PRIVATE KEY-----
+MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEA0J2DzBniqad/xzrE
+TA/WlYDMuzKHfdKduMIPmQ9UR52GNZ69l/W/2sIvl/eR8GCFAA2zvFi3cL5umxUE
+UhUN8QIDAQABAkAkoCLtiHXk90VVwxmHiRhRcyV+kCZ9jqamM1vtsWVIlSw4Rg3e
+93ayFIMuKMZ6czOv9AO26wWraszEDeZvMPcJAiEA7Uf7u+CNYllG+deGvjLP+heY
+v9Akz68kxKzD0nlm69cCIQDhEpviO7dyV1va3uxXQDgqXXM5isdzBt++sVbhMNhb
+dwIgforgJq8315ZzMrUNiAvDPMYu0UTpDNWED1tvx6S1DdsCID6uvBNJplGF2uMd
+6pxyGjJSTGDeMaXraCznntagj+EJAiAEi0UNPTjaL8tLmeF6Okvp+3HDU5KohAWC
+qOS0SpASgw==
+-----END PRIVATE KEY-----
+)EOF";
+
 
 void setup() {
     Serial.begin(9600);
     Serial.println("Started...");
 
-    
+    /*
     WiFi_connected_public = WiFi.onStationModeGotIP([](const WiFiEventStationModeGotIP& event)
     {
-        HTTP_server_public = (WiFiServer*)malloc(sizeof(WiFiServer));
-        *HTTP_server_public = WiFiServer(WiFi.localIP(), 80);
+        HTTP_server_public = (WiFiServerSecure*)malloc(sizeof(WiFiServerSecure));
+        *HTTP_server_public = WiFiServerSecure(WiFi.localIP(), 80);
         HTTP_init(HTTP_server_public);
 
         Serial.println("C-------------------");
@@ -52,6 +87,7 @@ void setup() {
         Serial.println(WiFi.localIP());
         Serial.println("-------------------");
     });
+    */
     
 
     WiFi.mode(WIFI_AP_STA);
@@ -63,6 +99,10 @@ void setup() {
 
     FS_init();
 
+
+
+    HTTP_server_private.setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
+    HTTP_server_private.setCache(&serverCache);
     HTTP_init(&HTTP_server_private); 
     Command_init();
     base_commands_init();
@@ -78,6 +118,6 @@ void loop() {
     //DNS_server.processNextRequest();
     
     HTTP_loop(&HTTP_server_private);
-    HTTP_loop(HTTP_server_public);
+    //HTTP_loop(HTTP_server_public);
     Command_loop();
 }
