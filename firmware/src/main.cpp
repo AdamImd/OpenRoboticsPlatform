@@ -9,6 +9,7 @@
 #include <ESP8266mDNS.h>
 
 #include "HTTP_server.h"
+#include "HTTPS_server.h"
 #include "Command_server.h"
 #include "base_commands.h"
 
@@ -24,8 +25,10 @@ const int max_conn = 4;
 const IPAddress localhost = IPAddress(192, 168, 0, 1);
 const IPAddress subnet = IPAddress(255, 255, 255, 0);
 
-WiFiServerSecure HTTP_server_private(localhost, 443);
-ServerSessions serverCache(5);
+WiFiServer       HTTP_server_private(localhost, 80);
+
+WiFiServerSecure HTTPS_server_private(localhost, 443);
+ServerSessions serverCache(40);
 
 //WiFiServerSecure* HTTP_server_public = nullptr;
 DNSServer DNS_server; // Disable?
@@ -100,10 +103,11 @@ void setup() {
     FS_init();
 
 
-
-    HTTP_server_private.setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
-    HTTP_server_private.setCache(&serverCache);
     HTTP_init(&HTTP_server_private); 
+
+    HTTPS_server_private.setRSACert(new BearSSL::X509List(serverCert), new BearSSL::PrivateKey(serverKey));
+    HTTPS_server_private.setCache(&serverCache);
+    HTTPS_init(&HTTPS_server_private); 
     Command_init();
     base_commands_init();
 
@@ -118,6 +122,7 @@ void loop() {
     //DNS_server.processNextRequest();
     
     HTTP_loop(&HTTP_server_private);
+    HTTPS_loop(&HTTPS_server_private);
     //HTTP_loop(HTTP_server_public);
     Command_loop();
 }

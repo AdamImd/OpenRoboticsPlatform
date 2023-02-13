@@ -16,6 +16,10 @@ window.addEventListener("load", async function () {
             editor_nav_init(function(path){ $("run_file_path").value = path; }, ev.newValue);
     });
 
+    $("connect_sensor").onclick = function() {
+        sensors.postMessage(["rtc_0", "Hello World"], "*");
+    }
+
     $("run_file_execute").onclick = execute_file; 
     async function execute_file (event) {
         $("run_file_execute").onclick = null;

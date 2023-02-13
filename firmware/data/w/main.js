@@ -68,12 +68,83 @@ async function editor_nav_init(callback, data = null) {
 
 var remote_IP;
 var local_IP;
+var sensors = null;
+var message_rcv;
+
+var rtc;
+var stream;
+
 window.addEventListener("load", function () {
     $("switch_IP").onclick = init_connection;
+    $("sensor_button").onclick = function (event) {
+        sensors = window.open("https://192.168.0.1/w/sensor_iframe.html", "sensors");
+        event.preventDefault();
+    }
+    message_rcv = function(event) {
+        alert(event.data);
+    }
+    
+    add_message_events();
+});
+
+var events = {}
+
+var message_web_sock = null;
+function add_message_events() {
+    events["icon"] = function(data) {
+        //message_web_sock = command_new_socket(false);
+    }
+    events["dcon"] = function(data) {
+        //command_close_socket(message_web_sock);
+    }
+    events["s_offer"] = function(data) {
+        //(message_web_sock);
+    }
+    events["rtc_ice"] = async function(data) {
+        try{
+            console.log("------------")
+            console.log(data)
+            console.log(JSON.parse(data))
+            console.log("------------")
+            rtc.addIceCandidate(new RTCIceCandidate(JSON.parse(data)));
+        }catch {
+            console.log("Dripped out!");
+        }
+    }
+    events["rtc_1"] = async function(data) {
+        console.log("RTC_1");
+        description = JSON.parse(data);
+        console.log(description);
+        rtc = new RTCPeerConnection({
+            //iceServers: [{urls: "stun:127.0.0.1:9876"}],
+            //iceTransportPolicy: "relay"
+        });
+        rtc.onicecandidate = function (event){
+            parent.postMessage(["rtc_ice", JSON.stringify(event.candidate)], "*");
+        }
+        if (description) {
+            await rtc.setRemoteDescription(description);
+            console.log("HERE");
+            if(description.type === "offer") {
+                await rtc.setLocalDescription();
+                sensors.postMessage(["rtc_2", JSON.stringify(rtc.localDescription)], "*")
+            }
+        }
+    }
+    events["rtc_3"] = async function(data) {
+        console.log("RTC_3");
+        stream = new MediaStream([rtc.getReceivers()[0].track]);
+        $("video").srcObject = stream;
+        $("video").width = 500;
+        $("video").height = 500;
+    }
+}
+window.addEventListener("message", (event) => {
+    //console.log(event.data);
+    events[event.data[0]] ? events[event.data[0]](event.data[1]) : false;
 });
 
 async function init_connection() {
-    console.log("INTI");
     let sock = await command_new_socket(false);
     await wifi_connect("DinnakenResidence", "Argyle!920", sock);
     let ssid = await wifi_get_ssid(sock);
