@@ -5,9 +5,11 @@ function $(doc) {
 var parent = null;
 var stream = new MediaStream(); 
 
+gp = null;
+
 window.addEventListener("load", async function () {
     parent = window.opener;
-    av = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+    //av = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
     
     events["rtc_ice"] = async function(data) {
         try{
@@ -33,6 +35,7 @@ window.addEventListener("load", async function () {
         stream.addTrack(av.getAudioTracks()[0]);
         rtc.addTrack(stream.getVideoTracks()[0], stream);
         rtc.addTrack(stream.getAudioTracks()[0], stream);
+        console.log(stream);
         $("video").srcObject = stream;
         await rtc.setLocalDescription();
         parent.postMessage(["rtc_1", JSON.stringify(rtc.localDescription)], "*");
@@ -45,6 +48,24 @@ window.addEventListener("load", async function () {
             await rtc.setRemoteDescription(description);
         }
         parent.postMessage(["rtc_3", "Hello World"], "*");
+    }  
+
+
+    events["gp_init"] = async function(data) {
+        window.addEventListener("gamepadconnected", (e) => {
+            gp = e.gamepad;
+        });
+    }  
+
+    events["gp_get"] = async function(data) {
+        if (gp != null) {
+            console.log(gp.axes);
+            data = {};
+            data["buttons"] = gp.buttons.map((b) => b.value);
+            data["axes"] = gp.axes;
+            parent.postMessage(["gp_message", JSON.stringify(data)], "*");
+        }
+        
     }  
 });
 

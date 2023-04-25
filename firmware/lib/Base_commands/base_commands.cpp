@@ -1,6 +1,7 @@
 #include "Command_server.h"
 #include <LittleFS.h>
 #include <Arduino.h>
+#include <Servo.h>
 #include "HTTP_server.h"
 
 #define FILESYS LittleFS
@@ -13,6 +14,8 @@
 #define DIGITAL_MODE_NUM 20
 #define DIGITAL_OUTPUT_NUM 21
 #define ANALOG_OUTPUT_NUM 22
+#define SERVO_INIT_NUM 23
+#define SERVO_OUTPUT_NUM 24
 
 uint16_t read_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t write_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
@@ -23,6 +26,8 @@ uint16_t wifi_get_ssid_init_handle(WebSocketsServer* server, uint8_t client_num,
 uint16_t digital_mode_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t digital_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 uint16_t analog_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+uint16_t servo_init_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
+uint16_t servo_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length);
 
 void base_commands_init(){
     analogWriteResolution(10);
@@ -74,6 +79,18 @@ void base_commands_init(){
     analog_output.command_init_handle = &analog_output_init_handle;
     analog_output.command_rw_handle = nullptr;
     Command_list_add(analog_output);
+
+    command servo_init;
+    servo_init.command_num = SERVO_INIT_NUM;
+    servo_init.command_init_handle = &servo_init_init_handle;
+    servo_init.command_rw_handle = nullptr;
+    Command_list_add(servo_init);
+
+    command servo_output;
+    servo_output.command_num = SERVO_OUTPUT_NUM;
+    servo_output.command_init_handle = &servo_output_init_handle;
+    servo_output.command_rw_handle = nullptr;
+    Command_list_add(servo_output);
 }
 
 // -------------------------------------------------------
@@ -182,6 +199,7 @@ uint16_t wifi_get_ssid_init_handle(WebSocketsServer* server, uint8_t client_num,
     server->sendTXT(client_num, network_list);
     return 0;
 }
+
 // -------------------------------------------------------
 
 uint16_t digital_mode_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
@@ -217,5 +235,65 @@ uint16_t analog_output_init_handle(WebSocketsServer* server, uint8_t client_num,
     return 0;
 }
 
+
+// -------------------------------------------------------
+
+struct servo_element{
+    uint8_t pin;
+    Servo servo;
+};
+
+servo_element servos[MAX_SERVOS];
+bool servos_init = false;  
+size_t servos_length = 0;
+
+uint16_t servo_init_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    if(!servos_init){
+        for(size_t i = 0; i< MAX_SERVOS; i++){
+            servos[i].pin = 255;
+        }
+        servos_init = true;
+        servos_length = 0;
+    }
+    for(size_t i = 0; i< length; i++){
+        bool found = false;
+        for(size_t j = 0; j< servos_length; j++){
+            if(servos[j].pin == payload[i]){
+                found = true;
+                break;
+            }
+        }
+        if(!found){
+            servos[servos_length].pin = payload[i];
+            servos[servos_length].servo = Servo();
+            servos[servos_length].servo.attach(payload[i]);
+            servos_length++;
+        }
+    }
+    server->sendTXT(client_num, "\x00");
+    return 0;
+
+}
+
+// TODO: Look into packet loss
+uint16_t servo_output_init_handle(WebSocketsServer* server, uint8_t client_num, uint8_t *payload, size_t length){
+    //Serial.println("AIO");
+    struct __attribute__((__packed__)) analog_data{
+        uint8_t pin;
+        int16_t data;
+    };
+    for(size_t i = 0; i< length/sizeof(analog_data); i++){
+        for(size_t j = 0; j< servos_length; j++){
+            if(servos[j].pin == ((analog_data*)payload)[i].pin){
+                Serial.println(((analog_data*)payload)[i].data);
+                servos[j].servo.writeMicroseconds(((analog_data*)payload)[i].data);
+                break;
+            }
+        }
+    }
+    
+    server->sendTXT(client_num, "\x00");
+    return 0;
+}
 
 // -------------------------------------------------------

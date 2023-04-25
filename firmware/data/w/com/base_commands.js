@@ -219,3 +219,33 @@ async function analog_write_command(outputs, socket = global_socket){ // Modes: 
         command_binary(22, buffer, callback, socket);
     });
 }
+
+async function servo_init_command(outputs, socket = global_socket){ // Modes: [[Pin],[Pin]...]
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve();
+        }
+        let buffer = new Uint8Array(outputs.length);
+        for (let i = 0; i < outputs.length; i++) {
+            buffer[i] = outputs[i][0];
+        }
+        command_binary(23, buffer, callback, socket);
+    });
+}
+
+
+async function servo_write_command(outputs, socket = global_socket){ // Modes: [[Pin, Mode],[Pin,Mode]...]
+    return new Promise(function (resolve) {
+        function callback(event) {
+            resolve();
+        }
+        let output_value = new Int16Array(1);
+        let buffer = new Uint8Array(3 * outputs.length);
+        for (let i = 0; i < outputs.length; i++) {
+            buffer[3*i + 0] = outputs[i][0];
+            output_value[0] = ~~(outputs[i][1]*500)+1500;
+            buffer.set(new Uint8Array(output_value.buffer), 3*i + 1);
+        }
+        command_binary(24, buffer, callback, socket);
+    });
+}

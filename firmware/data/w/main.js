@@ -87,6 +87,8 @@ window.addEventListener("load", function () {
     add_message_events();
 });
 
+
+
 var events = {}
 
 var message_web_sock = null;

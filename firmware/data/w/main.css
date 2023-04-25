@@ -3,8 +3,31 @@
 }
 
 body {
-    background-color: #ffb6c1 ;
+    background-color: #ffb6c1;
 }
+
+#header_main {
+    display: flex;
+}
+
+#header_title {
+    float: left;
+}
+
+#header_main_title {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+  
+#header_ip {
+    float: right;
+    text-align: right;
+    margin-left: auto;
+}
+
+
 
 #editor_main {
     background-color: whitesmoke;
@@ -16,15 +39,20 @@ body {
 #editor_nav {
     background-color: #c1e1f9;
     float: left;
-    width: 10%;
+    min-width: 10%;
     resize: horizontal;
     padding: 0;
     overflow: hidden;
     border: 4px solid #C0C0C0;
+    position: relative;
 }
 
 #editor_code_doc {
     border: 4px solid #C0C0C0;
+    height: calc(100vh - 110px);
+    overflow: auto;
+    font-size: 12pt;
+
 }
 
 .cm-gutter {
@@ -33,8 +61,11 @@ body {
 
 #editor_code {
     float: right;
+    resize: horizontal;
+    max-width: 90%;
+    min-width: 40%;
     width: 90%;
-    background-color: #D3D3D3;
+    background-color: #e2dfdf;
 }
 
 #editor_code_butons {
@@ -87,6 +118,12 @@ body {
 
 
 /* Set editor Height */
+
+#editor_nav_files {
+    text-align: center;
+    padding: 2px;
+    margin: 0px;
+}
 
 /* Tree */
 ul, #editor_nav_tree {
@@ -148,10 +185,11 @@ ul, #editor_nav_tree {
 /* RUN */
 
 #run_main {
-    background-color: blue;
+    background-color: #E6BE8A;
     display: flex;
     margin: 0;
     padding: 0;
+    height: calc(100vh - 80px);
 }
 
 #run_console {
