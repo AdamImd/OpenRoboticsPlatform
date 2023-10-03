@@ -88,7 +88,7 @@ function command_close_socket(socket = global_socket) {
 }
 
 // --------------------------------------------------------------------
-// Misc
+// WiFi
 
 async function get_ESP_IP(socket = global_socket){
     return new Promise(function (resolve) {

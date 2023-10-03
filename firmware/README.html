@@ -1,0 +1,195 @@
+<!DOCTYPE html><html><head>
+      <title>README</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////home/adam/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.7.10/crossnote/dependencies/katex/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px/2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      <h1 class="crossnote-header" id="esp8266-web-ide">ESP8266 Web IDE</h1>
+
+<h2 class="crossnote-header" id="platformiosetup">PlatformIO/Setup</h2>
+
+<p>The project is built using PlatformIO, an open source ecosystem for IoT development. PlatformIO is available as a plugin for Visual Studio Code, which is the recommended IDE for this project. To install PlatformIO, make sure that <em>python3-venv</em> is installed if you are using Ubuntu.</p>
+<p>To upload firmware to the ESP8266, open the PLATOFORMIO tab in Visual Studio Code and click the <em>upload</em> button under the General tab. PlatformIO will automatically install the required dependencies, and detect the connected ESP8266. Once the upload is complete, press the <em>Build Filesystem Image</em> button under the Platform tab, and then the <em>Upload Filesystem Image</em> button. This will upload the Little-FS filesystem to the ESP8266.</p>
+<p>The device should now be ready to go.</p>
+<h2 class="crossnote-header" id="connecting-to-the-device">Connecting to the device</h2>
+
+<p>The device will create a WiFi access point with the SSID <em>Open</em> by default. Connect to this access point and navigate to <em><a href="http://192.168.0.1">http://192.168.0.1</a></em> in your browser. You should now be able to see the device's web interface.</p>
+<h2 class="crossnote-header" id="navigation">Navigation</h2>
+
+<h3 class="crossnote-header" id="home">Home</h3>
+
+<p>The home page has three main areas:</p>
+<ul>
+<li>The editor, where you can write your code.</li>
+<li>The file browser, where you can navigate the filesystem.</li>
+<li>The Save/Run buttons, which allow you to save your code to the filesystem, and run it.</li>
+</ul>
+<p>To load the editor, click the button to start loading the editor. This will take a few seconds, and the button will change to a loading indicator. Once the editor has loaded, the CodeMirror editor will appear. You can now write your code. To save your code to the filesystem, click the <em>Save</em> button. To run your code, click the <em>Run</em> button. The code will be saved to the filesystem, and the run page will open in a new tab.</p>
+<h3 class="crossnote-header" id="run">Run</h3>
+
+<p>The run page has three main areas:</p>
+<ul>
+<li>The control buttons, which allow you to start, stop, and restart the program.</li>
+<li>The the canvas, which displays the output of the program and allows you to interact with it.</li>
+<li>The file browser, which allows you to navigate the filesystem and select a different program to run.</li>
+</ul>
+<h2 class="crossnote-header" id="high-level-api">High-Level API</h2>
+
+<p>There are some high level functions available to the user. These are intended to allow easy interaction with the device, and to allow the user to focus on the logic of their program.</p>
+<h3 class="crossnote-header" id="key_inputjs"><em>key_input.js</em></h3>
+
+<p>This file contains the <em>key_input</em> object, which allows the user to check if a key is pressed. The <em>key_input</em> object has the following methods:</p>
+<ul>
+<li><em>key_pressed</em>(key) - Returns true if the key is pressed, false otherwise.</li>
+</ul>
+<p>The <em>key</em> parameter is a string containing the name of the key to check. The names can be found on these pages:</p>
+<ul>
+<li><a href="https://www.w3.org/TR/uievents-key/#named-key-attribute-values">w3.org</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values">mozilla.org</a></li>
+</ul>
+<h3 class="crossnote-header" id="input_squarejs"><em>input_square.js</em></h3>
+
+<p>This file contains the <em>input_square</em> object, which allows the user to click on a square on the canvas. The <em>input_square</em> object has the following methods:</p>
+<ul>
+<li>Constructor - <em>input_square</em>(size, new_frame) - Creates a new input square with the given size in px. The <em>new_frame</em> parameter is a boolean which determines if an existing frame should be used if one exists. If <em>new_frame</em> is true, a new frame will be created, and the square will be drawn on it. If <em>new_frame</em> is false, the square will be drawn on the existing frame, if one exists. If no frame exists, a new one will be created.</li>
+<li><em>get_position()</em> - Returns the position of the square as an object with the properties <em>x</em> and <em>y</em>.\</li>
+</ul>
+<h3 class="crossnote-header" id="motor_controllerjs"><em>motor_controller.js</em></h3>
+
+<p>This file contains the <em>driver</em> object, which allows the user to control a L298N motor controller. The <em>driver</em> object has the following methods:</p>
+<ul>
+<li>Constructor <em>driver(motor1_enable, motor1_D1, motor1_D2, motor2_enable, motor2_D1, motor2_D2, enable = true)</em> - The first six parameters are the GPIO pins connected to the motor controller. The <em>enable</em> parameter is a boolean which determines if the motor controller should be enabled. If <em>enable</em> is true, the motor controller will be enabled, and the motors will be able to move. If <em>enable</em> is false, the motor controller will be disabled, and the motors will not be able to move. The default value for <em>enable</em> is true. This sets the pins to the correct mode, and motors to zero speed.</li>
+<li><em>set_speeds(motor1_speed, motor2_speed)</em> - Sets the speed of the motors. The <em>motor1_speed</em> and <em>motor2_speed</em> parameters are numbers between -1 and 1. A negative value will cause the motor to move in reverse, and a positive value will cause the motor to move forwards. A value of 0 will cause the motor to stop.</li>
+<li><em>invert_motor(motor1_invert, motor2_invert)</em> - Used to invert the direction of the motors. The <em>motor1_invert</em> and <em>motor2_invert</em> parameters are booleans.</li>
+</ul>
+<p>A typical usage of the <em>driver</em> object would look like this:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code><span class="token keyword keyword-new">new</span> <span class="token class-name">driver</span><span class="token punctuation">(</span><span class="token number">14</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre><h3 class="crossnote-header" id="printjs"><em>print.js</em></h3>
+
+<p>This file contains the <em>print</em> function, that overides the default <em>print</em> function. The <em>print</em> function has the following format:</p>
+<ul>
+<li><em>print(obj)</em> - Prints the object to the console. The object can be of any type.</li>
+</ul>
+<p>This function is intended to be used for debugging and communicating with the user. It checks if the "run_console" object is defined, and if it is, it will print the object to the console. If the "run_console" object is not defined, it will be created. The console will appear in the canvas of the run page.</p>
+<h3 class="crossnote-header" id="pinsjs"><em>pins.js</em></h3>
+
+<p>This file contains the translation from the pin names used in the code to the GPIO pins on the ESP8266. The file contains the following global definitions:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code><span class="token keyword keyword-const">const</span> <span class="token constant">D0</span>  <span class="token operator">=</span> <span class="token number">16</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D1</span>  <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D2</span>  <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D3</span>  <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D4</span>  <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D5</span>  <span class="token operator">=</span> <span class="token number">14</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D6</span>  <span class="token operator">=</span> <span class="token number">12</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D7</span>  <span class="token operator">=</span> <span class="token number">13</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D8</span>  <span class="token operator">=</span> <span class="token number">15</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D9</span>  <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">D10</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">LED_BUILTIN</span> <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token keyword keyword-const">const</span> <span class="token constant">LED_BUILTIN_AUX</span> <span class="token operator">=</span> <span class="token number">16</span>
+</code></pre><h2 class="crossnote-header" id="low-level-api">Low-Level API</h2>
+
+<p>The low-level API is intended to be used by the high-level API, and offers greater control over the hardware at the cost of abstraction.</p>
+<p>Many commands will require the use of the <em>await</em> keyword as they are asynchronous. This is because they operate over a WebSockets connection, and the response from the device may take some time to arrive. The <em>await</em> keyword will cause the program to wait until the response arrives before continuing.</p>
+<h3 class="crossnote-header" id="base_commandsjs"><em>base_commands.js</em></h3>
+
+<p>This file contains all of system calls that are available to the user. This file is loaded by each webpage, so they are all available to the user. The following system calls are available:</p>
+<h4 class="crossnote-header" id="base-commands">Base commands</h4>
+
+<ul>
+<li><em>sleep(ms)</em> - Sleeps for the given number of milliseconds. Must be called with await.</li>
+<li><em>require(path)</em> - Loads the given file as Javascript and executes the contets. This method operates over a WebSockets connection. Must be called with await.</li>
+<li><em>require_HTTP(path)</em> - Loads the given file as Javascript and executes the contets. This method operates over HTTP. Must be called with await.</li>
+<li><em>command_new_socket(use_global = true)</em> - Creates a new WebSockets connection to the ESP8266. If <em>use_global</em> is true, the <em>global_socket</em> variable will be set to the new socket. If <em>use_global</em> is false, the <em>global_socket</em> variable will not be changed and a new variable will be returned. Must be called with await.</li>
+<li><em>command_close_socket(socket = global_socket)</em> - Closes the given WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used.</li>
+</ul>
+<h4 class="crossnote-header" id="filesystem-commands">Filesystem commands</h4>
+
+<ul>
+<li><em>read_file_HTTP(file_name, callback = function(){})</em> - Reads the given file from the filesystem. This method operates over HTTP. The <em>callback</em> parameter is a function that will be called when <em>.onreadystatechange</em> is called. This method uses the HTTP Get method. Must be called with await.</li>
+<li><em>read_file_command(file_name, socket = global_socket)</em> - Reads the given file from the filesystem. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+<li><em>save_file_command(file_name, file_data, socket = global_socket)</em> - Saves the given file to the filesystem. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used.</li>
+</ul>
+<h4 class="crossnote-header" id="hardware-io-commands">Hardware I/O commands</h4>
+
+<p>These commands are akin to the Arduino API, and are intended to be used in the same way. They function more or less as RPCs for the Arduino API on the ESP8266.</p>
+<ul>
+<li><em>pin_mode_command(modes, socket = global_socket)</em> - Sets the mode of the given pins. The <em>modes</em> parameter is an object with the pin names as keys, and the modes as values. The modes can be <em>INPUT</em>, <em>OUTPUT</em>, or <em>INPUT_PULLUP</em>. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+<li><em>digital_write_command(outputs, socket = global_socket)</em> - Sets the output of the given pins. The <em>outputs</em> parameter is an object with the pin names as keys, and the outputs as values. The outputs can be 1 or 0. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+<li><em>analog_write_command(outputs, socket = global_socket)</em> - Sets the output of the given pins. The <em>outputs</em> parameter is an object with the pin names as keys, and the outputs as values. The outputs can be between 0 and 1023. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+<li><em>servo_init_command(outputs, socket = global_socket)</em> - Sets the mode of the given pins to servo mode. The <em>outputs</em> parameter is an object with the pin names as keys, and the outputs as values. The outputs can be between 0 and 1023. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+<li><em>servo_write_command(outputs, socket = global_socket)</em> - Sets the output of the given pins. The <em>outputs</em> parameter is an object with the pin names as keys, and the outputs as values. The outputs can be between 0 and 1023. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+</ul>
+<h4 class="crossnote-header" id="wifi-commands">WiFi commands</h4>
+
+<p>These methods are intended to be used to connect the ESP8266 to a WiFi network. They are not required to use the device, but they can allow for connecting to external WiFi networks.</p>
+<ul>
+<li><em>get_ESP_IP(socket = global_socket)</em> - Returns the IP address of the ESP8266. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+<li><em>wifi_connect(ssid, password, socket = global_socket)</em> - Connects the ESP8266 to the given WiFi network. The <em>ssid</em> parameter is the name of the WiFi network, and the <em>password</em> parameter is the password for the WiFi network. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+<li><em>wifi_get_ssid(socket = global_socket)</em> - Returns the name of the WiFi network that the ESP8266 is connected to. This method operates over a WebSockets connection. If <em>socket</em> is not given, the <em>global_socket</em> variable will be used. Must be called with await.</li>
+</ul>
+<h3 class="crossnote-header" id="command-structure">Command structure</h3>
+
+<p>These commands are structured as RPC calls. Each command has one callback number. The callback number used in a RPC will call the corispondign callback function on the ESP8266. This communicates with the ESP8266 over a WebSockets connection with one of the two calls:</p>
+<ul>
+<li><em>command_text(num, text, callback_fun, socket)</em> - Sends the given text to the ESP8266. The <em>num</em> parameter is the number of the command, and the <em>text</em> parameter is the text to send. The <em>callback_fun</em> parameter is a function that will be called when the response is received. The <em>socket</em> parameter is the WebSockets connection to use.</li>
+<li><em>command_binary(num, bin, callback_fun, socket)</em> - Sends the given binary data to the ESP8266. The <em>num</em> parameter is the number of the command, and the <em>bin</em> parameter is the binary data to send. The <em>callback_fun</em> parameter is a function that will be called when the response is received. The <em>socket</em> parameter is the WebSockets connection to use.</li>
+</ul>
+<p>A typical command looks like this:</p>
+<pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code><span class="token keyword keyword-async">async</span> <span class="token keyword keyword-function">function</span> <span class="token function">wifi_connect</span><span class="token punctuation">(</span><span class="token parameter">ssid<span class="token punctuation">,</span> password<span class="token punctuation">,</span> socket <span class="token operator">=</span> global_socket</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword control-flow keyword-return">return</span> <span class="token keyword keyword-new">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token keyword keyword-function">function</span> <span class="token punctuation">(</span><span class="token parameter">resolve</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword keyword-function">function</span> <span class="token function">callback</span><span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">command_text</span><span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">,</span> ssid <span class="token operator">+</span> <span class="token string">"\x00"</span> <span class="token operator">+</span> password <span class="token operator">+</span> <span class="token string">"\x00"</span> <span class="token punctuation">,</span> callback<span class="token punctuation">,</span> socket<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><p>In this command, the <em>command_text</em> function is used to send the command to the ESP8266. The <em>command_text</em> function takes the command number, the text to send, a callback function, and the WebSockets connection to use. The callback function will be called when the response is received. The <em>wifi_connect</em> function is an asynchronous function, so it must be called with the <em>await</em> keyword. The <em>wifi_connect</em> function returns a promise, which will be resolved when the callback function is called. The <em>wifi_connect</em> function takes the SSID and password of the WiFi network to connect to, and the WebSockets connection to use.</p>
+<p>The corisponding command on the ESP8266 looks like this:</p>
+<pre data-role="codeBlock" data-info="c" class="language-c c"><code><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">WIFI_CONNECT_NUM</span> <span class="token expression"><span class="token number">9</span></span></span>
+<span class="token comment">// ...</span>
+<span class="token keyword keyword-void">void</span> <span class="token function">some_function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    command wifi_connect<span class="token punctuation">;</span>
+    wifi_connect<span class="token punctuation">.</span>command_num <span class="token operator">=</span> WIFI_CONNECT_NUM<span class="token punctuation">;</span>
+    wifi_connect<span class="token punctuation">.</span>command_init_handle <span class="token operator">=</span> <span class="token operator">&amp;</span>wifi_connect_init_handle<span class="token punctuation">;</span>
+    wifi_connect<span class="token punctuation">.</span>command_rw_handle <span class="token operator">=</span> nullptr<span class="token punctuation">;</span>
+    <span class="token function">Command_list_add</span><span class="token punctuation">(</span>wifi_connect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//...</span>
+<span class="token class-name">uint16_t</span> <span class="token function">wifi_connect_init_handle</span><span class="token punctuation">(</span>WebSocketsServer<span class="token operator">*</span> server<span class="token punctuation">,</span> <span class="token class-name">uint8_t</span> client_num<span class="token punctuation">,</span> <span class="token class-name">uint8_t</span> <span class="token operator">*</span>payload<span class="token punctuation">,</span> <span class="token class-name">size_t</span> length<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    WiFi<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword keyword-char">char</span><span class="token operator">*</span><span class="token punctuation">)</span>payload<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword keyword-char">char</span><span class="token operator">*</span><span class="token punctuation">)</span>payload<span class="token operator">+</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword keyword-char">char</span><span class="token operator">*</span><span class="token punctuation">)</span>payload<span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    server<span class="token operator">-&gt;</span><span class="token function">sendTXT</span><span class="token punctuation">(</span>client_num<span class="token punctuation">,</span> <span class="token string">"\x00"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword keyword-return">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre><p>When the ESP8266 receives the command, it will call the <em>wifi_connect_init_handle</em> function. This function will be called with the WebSocketsServer object, the client number, the payload, and the length of the payload. The <em>wifi_connect_init_handle</em> function will call the <em>WiFi.begin</em> function with the SSID and password. The <em>wifi_connect_init_handle</em> function will then send a null byte to the client to indicate that the command has been completed.</p>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
